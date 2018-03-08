@@ -1,0 +1,74 @@
+<div class="card">
+  <h5 class="card-header">Ethereum API</h5>
+  <div class="card-body">
+    <div id="connection-status">
+      <div class="alert alert-warning connection-loading" role="alert">
+	<p class="card-text small">
+	  Connecting to Ethereum Network...
+	</p>
+      </div>
+      <div class="alert alert-success connection-success" role="alert" hidden>
+	<p class="card-text small">
+	  Connected to Ethereum <b><code id="ethereum-network"></code></b> Network with <b><code id="ethereum-node"></code></b>
+	</p>
+      </div>
+      <div class="alert alert-danger connection-error" role="alert" hidden>
+	<p class="card-text connection-error-text small">
+	  Unable to connect to Ethereum Network.
+	</p>
+      </div>      
+    </div>
+    <h6>Balance: <span id="ethereum-account-balance">0</span> ETH</h6>
+    <form id="ethereum-account-form">
+      <div class="form-group">
+	<label for="ethereum-account">Account</label>
+	<select class="form-control form-control-sm" id="ethereum-account" aria-describedby="ethereum-account-help" required disabled></select>
+	<small id="ethereum-account-help" class="form-text text-muted">This account has no rights on the vault, it is only used to pay for gas.</small>
+	<small id="card-text small" class="form-text text-muted" hidden> Node: <code id="ethereum-node"></code></small>
+	<small id="card-text small" class="form-text text-muted" hidden> Network: <code id="ethereum-network"></code></small> 	
+      </div>
+    </form>
+
+    <a href="#" id="show-connection-details-link" class="small">Edit connection details</a>
+    <div id="connection-details" hidden>
+      <hr />
+      <form id="connection-form">
+	<div class="form-group connection-injection" hidden>
+	  <input type="checkbox" id="connection-injection-checkbox" value="">
+	  <label id="connection-injection-text">Use Extension</label>
+	</div>
+	<div class="form-group">
+	  <label for="connection-host">Host</label>
+	  <input type="text" class="form-control form-control-sm" id="connection-host" aria-describedby="connection-host-help" placeholder="localhost">
+	  <small id="connection-host-help" class="form-text text-muted">Host must be reachable from this machine.</small>
+	</div>
+	<div class="form-group">
+	  <label for="connection-port">Port</label>
+	  <input type="text" class="form-control form-control-sm" id="connection-port" placeholder="8545">
+	</div>
+	<button type="submit" class="btn btn-primary">Connect</button>
+      </form>
+      <a href="#" id="hide-connection-details-link" class="small">Hide connection details</a>
+    </div>
+  </div>
+</div>
+
+<div id="connection-error-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Connection Error</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Unable to connect to Ethereum Network. Select how you are trying to connect:</p>
+	<%{ 'debugging' }%>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+
+
+import sys
+import json
+import codecs
+from warnings import warn
+from eth_utils import force_bytes
+
+
+from web3 import Web3, HTTPProvider
+
+LOCAL_NODE = 'http://localhost:8545'
+
+def main(contract_address, destination_address, amount):
+    contract_json = json.load(open('./build/contracts/TrezorMultisig2of3.json'))
+    w3 = Web3(HTTPProvider(LOCAL_NODE, request_kwargs={'timeout': 60}))
+    
+    contract = w3.eth.contract(address=contract_address,abi=contract_json['abi'])
+    wei = Web3.toWei(amount, 'ether')
+    message = contract.call().generateMessageToSign(destination_address, wei)
+
+    # https://github.com/ethereum/web3.py/issues/193
+    print(force_bytes(message).hex())
+    
+
+if __name__ == '__main__':
+    if (len(sys.argv) < 4):
+        sys.exit("USAGE: ethereum_multisig_spend_unsigned_data CONTRACT_ADDRESS DESTINATION_ADDRESS AMOUNT")
+    main(sys.argv[1], sys.argv[2], sys.argv[3])

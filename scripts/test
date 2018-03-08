@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#
+# Paths
+#
+NODE_DIR=./node_modules
+TESTRPC=${NODE_DIR}/.bin/testrpc
+TRUFFLE=${NODE_DIR}/.bin/truffle
+
+#
+# testrpc options
+#
+
+SECRET="ketchup cage verify cash better message advice demand valley brisk step vanish"
+TESTRPC_PORT=${TESTRPC_PORT:-8545}
+#GAS_LIMIT=47E7C4
+
+function kill_testrpc {
+    if [ -e tmp/testrpc.pid ]; then
+	testrpc_pid=$(cat tmp/testrpc.pid)
+	echo "Killing running testrpc process with PID ${testrpc_pid}"
+	kill $testrpc_pid && rm tmp/testrpc.pid
+    fi
+}
+
+kill_testrpc
+${TESTRPC} --port ${TESTRPC_PORT} --mnemonic "${SECRET}" >> tmp/testrpc.log 2>&1 &
+echo $! > tmp/testrpc.pid
+${TRUFFLE} test test/TestTrezorMultiSig2of3.js
+kill_testrpc

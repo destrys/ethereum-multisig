@@ -1,0 +1,22 @@
+<dl class="row">
+  <dt class="col-3">Source</dt>
+  <dd class="col-9"><code class="spend-source-address"></code></dd>
+
+  <dt class="col-3">Version</dt>
+  <dd class="col-9"><span class="spend-source-version"></span></dd>
+
+  <dt class="col-3">Available Balance</dt>
+  <dd class="col-9"><span class="spend-source-balance"></span> ETH</dd>
+
+  <dt class="col-3">Destination</dt>
+  <dd class="col-9"><code class="spend-destination-address"></code></dd>
+
+  <dt class="col-3">Amount to Send</dt>
+  <dd class="col-9"><span class="spend-amount"></span> ETH</dd>
+
+<% if (txid) { %>
+  <dt class="col-3">TXID</dt>
+  <dd class="col-9"><code class="spend-transaction-hash"></code></dd>
+<% } %>
+
+</dl>

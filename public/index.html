@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Ethereum Multisig Vault" />
+    <title>Ethereum Multisig Vault</title>
+
+    <link rel="stylesheet" href="./css/dapp.css" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/favicons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="./images/favicons/manifest.json">
+    <link rel="mask-icon" href="./images/favicons/safari-pinned-tab.svg" color="#387EEC">
+    <link rel="shortcut icon" href="./images/favicons/favicon.ico">
+    <meta name="msapplication-config" content="./images/favicons/browserconfig.xml">
+    <meta name="theme-color" content="#ffffff">
+
+  </head>
+  <body>
+    <nav class="navbar bg-light">
+      <div class="container">
+	<a class="navbar-brand" href="./index.html">
+	  <img src="./images/logo.png" alt="logo" /> 
+	  Ethereum Multisig Vault <small>v1.0</small>
+	</a>
+	<ul class="nav">
+	  <li class="nav-item d-none d-lg-inline-block">
+            <a href="./create/index.html" class="nav-link" >Create</a>
+	  </li>
+	  <li class="nav-item d-none d-lg-inline-block">
+            <a href="./spend/index.html" class="nav-link">Spend</a>
+	  </li>
+	  <li class="nav-item d-none d-lg-inline-block">
+            <a href="./" class="nav-link">Help</a>
+	  </li>
+	</ul>
+	<button class="navbar-toggler d-xl-none" type="button" data-toggle="collapse" data-target="#mainNavContent" aria-controls="mainNavContent" aria-expanded="false" aria-label="Toggle navigation">
+	  <i class="fa fa-bars" aria-hidden="true"></i>
+	</button>
+      </div>
+      <div class="container justify-content-end" id="subNavItems">
+	<div id="mainNavContent" class="collapse">
+	  <ul class="navbar-nav">
+            <li class="nav-item d-lg-none">
+              <a href="./index.html" class="nav-link">Create</a>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a href="./spend/index.html" class="nav-link">Spend</a>
+            </li>
+            <li class="nav-item d-lg-none">
+              <a href="./help/index.html" class="nav-link">Help</a>
+            </li>
+	  </ul>
+	</div>
+      </div>
+    </nav>
+    <div class="container">
+      
+<h1>What is this?</h1>
+
+<div class="row">
+  <div class="col-8">
+
+    <p class="lead">This application allows you to create and spend
+    from an Ethereum 2/3-multisig smart contract using your hardware
+    wallet.</p>
+
+    <p>It was built by <a href="https://www.unchained-capital.com"
+    target="_blank">Unchained Capital</a> to help holders worldwide
+    safely store their ETH using multisig cold-storage.  If you are
+    storing ETH on a Trezor and you trust at least two other people,
+    you could be doing it better.  Now you can use this application
+    with your trusted friends, family, and colleagues to protect your
+    wealth.</p>
+
+    <p>To learn more about the design philosophy of this application
+    and smart contract, read
+    the <a href="https://blog.unchained-capital.com/a-simple-safe-multisig-ethereum-smart-contract-for-hardware-wallets-a107bd90bb52"
+    target="_blank">blog post</a>.  If you are a developer you may
+    want to check out
+    the <a href="https://github.com/unchained-capital/ethereum-mulitisig"
+    target="_blank">source code</a> for the smart contract (which
+    includes this dApp) on GitHub.  Unchained Capital is also
+    operating a <a href="https://www.unchained-capital.com/bounties"
+    target="_blank">bug bounty</a> around this contract & dApp.</p>
+
+  </div>
+  <div class="col-4">
+    <div class="card">
+      <h5 class="card-header">Useful Links</h5>
+      <div class="card-body">
+	<dl>
+	  <dt>Background</dt>
+	  <dd><a href="https://blog.unchained-capital.com/a-simple-safe-multisig-ethereum-smart-contract-for-hardware-wallets-a107bd90bb52
+" target="_blank">Blog Post</a>
+	  <dt>Code</dt>
+	  <dd><a href="https://github.com/unchained-capital/ethereum-multisig" target="_blank">GitHub Repository</a>
+	  <dt>Suggest an improvement</dt>
+	  <dd><a href="https://github.com/unchained-capital/ethereum-multisig/issues" target="_blank">GitHub Issues</a>
+	  <dt>Report a bug?</dt>
+	  <dd><a href="https://www.unchained-capital.com/bounties" target="_blank">Bug Bounty</a>
+	</dl>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>How does it work?</h2>
+
+<p class="lead">This application connects <a href="https://trezor.io"
+target="_blank">Trezor</a> hardware wallets with the Ethereum blockchain.</p>
+
+<p>When creating the multisig smart contract, 3 Trezors are required.
+When spending, 2/3 of these same Trezors are required.  The private
+keys used to create and spend from a contract are only present on your
+Trezors.  This application stores no data whatsoever about you, your
+Trezors, your addresses, or your transactions.</p>
+
+<p>This means that you are completely in control of your own security
+and accounting.  In particular:</p>
+
+<ul>
+  <li>You must yourself track the addresses of the smart contracts
+  this application creates.</li>
+  <li>For each such address, you must track which Trezors you used to
+  create the address, along with which BIP32 derivation path you used
+  on each Trezor (it is OK to reuse the same 3 Trezors & BIP32
+  paths).</li>
+  <li>You must protect these Trezors and their corresponding wallet
+  words.  2/3-multisig is a great security improvement over singlesig
+  but that's no excuse to get sloppy about the security of an
+  individual key.</li>
+</ul>
+    
+<h2>Connecting to the Ethereum network</h2>
+
+<p class="lead">This application requires a funded account in a
+synced, connected Ethereum client to pay for gas.</p>
+
+<p>The Ethereum transactions required to create and spend from the
+smart contract will be authored by this application.  Broadcasting
+them to the Ethereum network requires a synced, connected Ethereum
+client.  The client should have an account with some modest ETH
+balance to pay for gas.  As of this writing, 0.01 ETH is more than
+sufficient.</p>
+
+<p>The account used to pay for gas has absolutely no special rights to
+fund, spend from, or otherwise control the smart contract this
+application creates.  Only the private keys on the 3 Trezor devices
+you used to create the smart contract matter.  Creating and spending
+from a smart contract can be done by totally separate accounts, as
+long as this application and the same 3 Trezors are used.</p>
+
+<p>Because of this design, a browser-based wallet such
+as <a href="https://metamask.io/" target="_blank">Metamask</a>
+provides acceptable security and is also extremely convenient.</p>
+
+<p>Full Ethereum nodes such as <a href="https://www.parity.io/"
+target="_blank">Parity</a> or <a href="https://geth.ethereum.org/"
+target="_blank">Geth</a> will also work, though may require some
+special configuration or browser extensions.</p>
+
+<p>Get more details about connecting to an Ethereum client in
+the <a href="https://github.com/unchained-capital/ethereum-multisig#dapp"
+target="_blank">dApp section</a> of the <code>README</code> for this
+GitHub repo.</p>
+
+<h2>Feedback?</h2>
+
+<p>Unchained Capital is actively developing this project and very much
+welcomes feedback.  To file bugs or request features, please
+use <a href="https://github.com/unchained-capital/ethereum-multisig/issues"
+target="_blank">GitHub issues</a>.</p>
+
+<p>Unchained Capital is also operating
+a <a href="https://www.unchained-capital.com/bounties"
+target="_blank">bug bounty</a> for this project.</p>
+
+<h2>Source Code</h2>
+
+<p>The source code of the smart contract used by this version of this
+application is below.  You can also find
+it <a href="https://github.com/unchained-capital/ethereum/blob/master/contracts/TrezorMultiSig2of3.sol"
+target="_blank">on GitHub</a> or see it
+on <a href="http://etherscan.io/" target="_blank">Etherscan</a> for
+any contract created by this application.</p>
+
+<pre><code id="solidity-contract" class="solidity">pragma solidity ^0.4.19;
+
+// A 2/3 multisig contract which is compatible with Trezor-signed messages.
+//
+// To authorize a spend, two signtures must be provided by 2 of the 3 owners.
+// To generate the message to be signed, provide the destination address and
+// spend amount (in wei) to the generateMessageToSignmethod.
+// The signatures must be provided as the (v, r, s) hex-encoded coordinates.
+// The S coordinate must be 0x00 or 0x01 corresponding to 0x1b and 0x1c, respectively.
+// See the test file for example inputs.
+//
+// If you use other software than the provided dApp or scripts to sign the message,
+// verify that the message shown by the trezor device matches the generated message in hex.
+//
+// WARNING: The generated message is only valid until the next spend is executed.
+//          after that, a new message will need to be calculated.
+//
+// WARNING: The signing algorithm Trezor uses is different than that
+// of Ledger, Geth, Etc. This contract is for Trezor managed private
+// keys ONLY.
+//
+// ADDITIONAL WARNING: This contract is **NOT** ERC20 compatible.
+// Tokens sent to this contract will be lost forever.
+//
+contract TrezorMultiSig2of3 {
+
+  // The 3 addresses which control the funds in this contract.  The
+  // owners of 2 of these addresses will need to both sign a message
+  // allowing the funds in this contract to be spent.
+  mapping(address =&gt; bool) private owners;
+
+  // The contract nonce is not accessible to the contract so we
+  // implement a nonce-like variable for replay protection.
+  uint256 public spendNonce = 0;
+
+  // Contract Versioning
+  uint256 public unchainedMultisigVersionMajor = 1;
+  uint256 public unchainedMultisigVersionMinor = 0;   
+  
+  // An event sent when funds are received.
+  event Funded(uint new_balance);
+  
+  // An event sent when a spend is triggered to the given address.
+  event Spent(address to, uint transfer);
+
+  // Instantiate a new Trezor Multisig 2 of 3 contract owned by the
+  // three given addresses
+  function TrezorMultiSig2of3(address owner1, address owner2, address owner3) public {
+    address zeroAddress = 0x0;
+    
+    require(owner1 != zeroAddress);
+    require(owner2 != zeroAddress);
+    require(owner3 != zeroAddress);
+
+    require(owner1 != owner2);
+    require(owner2 != owner3);
+    require(owner1 != owner3);
+    
+    owners[owner1] = true;
+    owners[owner2] = true;
+    owners[owner3] = true;
+  }
+
+  // The fallback function for this contract.
+  function() public payable {
+    Funded(this.balance);
+  }
+
+  // Generates the message to sign given the output destination address and amount.
+  // includes this contract's address and a nonce for replay protection.
+  // One option to  independently verify: https://leventozturk.com/engineering/sha3/ and select keccak
+  function generateMessageToSign(address destination, uint256 value) public constant returns (bytes32) {
+    require(destination != address(this));
+    bytes32 message = keccak256(spendNonce, this, value, destination);
+    return message;
+  }
+  
+  // Send the given amount of ETH to the given destination using
+  // the two triplets (v1, r1, s1) and (v2, r2, s2) as signatures.
+  // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
+  function spend(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) public {
+    // This require is handled by generateMessageToSign()
+    // require(destination != address(this));
+    require(this.balance &gt;= value);
+    require(_validSignature(destination, value, v1, r1, s1, v2, r2, s2));
+    spendNonce = spendNonce + 1;
+    destination.transfer(value);
+    Spent(destination, value);
+  }
+
+  // Confirm that the two signature triplets (v1, r1, s1) and (v2, r2, s2)
+  // both authorize a spend of this contract's funds to the given
+  // destination address.
+  function _validSignature(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) private constant returns (bool) {
+    bytes32 message = _messageToRecover(destination, value);
+    address addr1   = ecrecover(message, v1+27, r1, s1);
+    address addr2   = ecrecover(message, v2+27, r2, s2);
+    require(_distinctOwners(addr1, addr2));
+    return true;
+  }
+
+  // Generate the the unsigned message (in bytes32) that each owner's
+  // Trezor would have signed for the given destination and amount.
+  //
+  // The generated message from generateMessageToSign is converted to
+  // ascii when signed by a trezor.
+  //
+  // The required Trezor signing prefix, the length of this
+  // unsigned message, and the unsigned ascii message itself are
+  // then concatenated and hashed with keccak256.
+  function _messageToRecover(address destination, uint256 value) private constant returns (bytes32) {
+    bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
+    bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
+    bytes memory prefix = "\x19Ethereum Signed Message:\n";
+    return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+  }
+
+  
+  // Confirm the pair of addresses as two distinct owners of this contract.
+  function _distinctOwners(address addr1, address addr2) private constant returns (bool) {
+    // Check that both addresses are different
+    require(addr1 != addr2);
+    // Check that both addresses are owners
+    require(owners[addr1]);
+    require(owners[addr2]);
+    return true;
+  }
+
+
+  // Construct the byte representation of the ascii-encoded
+  // hashed message written in hex.
+   function _hashToAscii(bytes32 hash) private pure returns (bytes) {
+    bytes memory s = new bytes(64);
+    for (uint i = 0; i &lt; 32; i++) {
+      byte b  = hash[i];
+      byte hi = byte(uint8(b) / 16);
+      byte lo = byte(uint8(b) - 16 * uint8(hi));
+      s[2*i]   = _char(hi);
+      s[2*i+1] = _char(lo);            
+    }
+    return s;    
+  }
+  
+  // Convert from byte to ASCII of 0-f
+  // http://www.unicode.org/charts/PDF/U0000.pdf
+  function _char(byte b) private pure returns (byte c) {
+    if (b &lt; 10) return byte(uint8(b) + 0x30);
+    else return byte(uint8(b) + 0x57);
+  }
+}
+ </code></pre>
+
+<h5>Disclaimer</h5>
+
+<p class="small">This application is in “alpha” state and is presented
+for evaluation and testing only. It is provided “as is,” and any
+express or implied warranties, including but not limited to the
+implied warranties of merchantability and fitness for a particular
+purpose, are disclaimed. By using this application, you accept all
+risks of such use, including full responsibility for any direct or
+indirect loss of any kind resulting from the use of this application,
+which may involve complete loss of any ETH or other coins associated
+with addresses used with this application. In no event shall Unchained
+Capital, Inc., its employees and affiliates, or developers of this
+application be liable for any direct, indirect, incidental, special,
+exemplary, or consequential damages (including, but not limited to,
+procurement of substitute goods or services; loss of use, data, or
+profits; or business interruption) however caused and on any theory of
+liability, whether in contract, strict liability, or tort (including
+negligence or otherwise) arising in any way out of the use of this
+application, even if advised of the possibility of such damage.</p>
+
+
+    </div>
+    <script type="text/javascript" src="./js/dapp.js"></script>
+    <script type="text/javascript">
+      window.TREZOR_POPUP_ORIGIN = "https://connect.trezor.io";
+    </script>
+    <script type="text/javascript" src="https://connect.trezor.io/4/connect.js"></script>
+  </body>
+</html>
+
+

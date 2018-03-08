@@ -1,0 +1,176 @@
+<%{ 'layout' }%>
+<%{ content %>
+<h1>Spend From Vault</h1>
+
+<p class="lead">This page spends from an existing 2/3-multisig smart
+contract using 2 Trezors.</p>
+
+<p>You and your co-signer will need a total of 2 Trezor hardware
+wallets.  Both Trezors do not need to be co-located.  Your co-signer
+can use this application on their own computer and send you their
+signature via a (preferably secure) side-channel such as email.</p>
+
+<div class="row">
+
+  <div class="col-md-8">
+
+    <div id="find-vault" class="card">
+      <h5 class="card-header">Find Vault Contract</h5>
+      <form id="find-vault-form">
+	<div class="card-body">
+	  <div class="form-group">
+	    <label for="vault-address">Address</label>
+	    <input type="text" class="form-control form-control-sm" id="find-vault-address-input" aria-describedby="find-vault-address-input-help" placeholder="0xaaa..." required>
+	    <small id="find-vault-address-input-help" class="form-text text-muted">An address previously created by this application.</small>
+	    <p class="text-danger small"></p>
+	  </div>
+   	  <button class="btn btn-primary" type="submit" disabled>
+	    <i class="fa fa-download"></i> &nbsp;
+	    Import
+	  </button>
+	  <p class="text-danger card-text vault-address-errors"></p>
+	</div>
+      </form>
+    </div>
+
+    <div id="author-spend" class="card" hidden>
+      <h5 class="card-header">Author Spend Transaction</h5>
+      <form id="author-spend-form">
+	<div class="card-body">
+	  <div class="row">
+	    <div class="col-9">
+	      <div class="form-group">
+		<label for="vault-address">Vault Address</label>
+		<input type="text" class="form-control form-control-sm" id="author-spend-source-address-input" aria-describedby="author-spend-source-address-input-help" required readonly>
+		<small id="author-spend-source-address-input-help" class="form-text text-muted">The source address.</small>
+	      </div>
+	    </div>
+	    <div class="col-3">
+	      <p>Version <span class="spend-source-version"></span></p>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <label for="spend-address">Destination Address</label>
+	    <input type="text" class="form-control form-control-sm destination-address-input" id="spend-destination-address-input" aria-describedby="spend-destination-address-input-help" placeholder="0xaaa..." required>
+	    <small id="spend-destination-address-input-help" class="form-text text-muted">The destination address.</small>
+	    <p class="text-danger small"></p>
+	  </div>
+	  <div class="row">
+	    <div class="col-9">
+	      <div class="form-group">
+		<label for="spend-amount">Spend Amount</label>
+		<div class="input-group">
+		  <input type="text" class="form-control form-control-sm" id="spend-amount-input" aria-describedby="spend-amount-input-help" required>
+		  <div class="input-group-append">
+		    <span class="input-group-text">ETH</span>
+		  </div>
+		</div>
+		<small id="spend-amount-input-help" class="form-text text-muted">Amount to send.</small>
+		<p class="text-danger small"></p>
+	      </div>
+	    </div>
+	    <div class="col-3">
+	      <p>Available Balance: <span class="spend-source-balance">0</span> ETH</p>
+	    </div>
+	  </div>
+	  <button class="btn btn-primary" type="submit" disabled>
+	    <i class="fa fa-pencil"></i> &nbsp;
+	    Author
+	  </button>
+	  <div class="text-danger card-text" id="author-spend-errors"></div>
+	</div>
+      </form>
+    </div>
+
+    <div id="spend" class="card" hidden>
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Spend Transaction
+	  <small>Signatures: <span id="spend-signature-count">0</span>/2</small>
+	</span>
+      </h5>
+      <div class="card-body">
+
+	<%{ 'spend_transaction' {txid: false} }%>
+
+	<p>When you export a signature below, your Trezor will display
+	the following message for you to sign:</p>
+
+	<pre><code id="spend-message"></code></pre>
+	
+	<p>Once both signature are obtained, you can broadcast this
+	  spend.</p>
+
+	<div class="row">
+	  <div class="col-3">
+	    <form id="broadcast-spend-form">
+	      <button type="submit" class="btn btn-primary" disabled>
+		<i class="fa fa-upload"></i> &nbsp;
+		Broadcast
+	      </button>
+	    </form>
+	    <p class="text-danger card-text" id="broadcast-spend-errors"></p>
+	  </div>
+	  <div class="col-3">
+	    <form id="modify-spend-form">
+	      <button type="submit" class="btn btn-danger">
+		<i class="fa fa-undo"></i> &nbsp;
+		Modify Spend
+	      </button>
+	    </form>
+	  </div>
+	</div>
+      </div>
+    </div>
+
+    <div id="pending-authorization" class="card" hidden>
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Authorize Spending Transaction
+	  <i class="fa fa-spinner fa-spin"></i>
+	</span>
+      </h5>
+      <div class="card-body">
+	<p class="card-text">The following transaction spending from your vault is about to be broadcast:</p>
+	<%{ 'spend_transaction' {txid: false} }%>
+	<p class="card-text">You may need to authorize the transaction using your Ethereum client.</p>
+	<p class="text-danger card-text"></p>
+	<form id="restart-create-vault-form">
+	  <button type="submit" class="btn btn-danger" disabled>
+	    <i class="fa fa-undo"></i> &nbsp;
+	    <span class="button-text">Retry Spending</span>
+	  </button>
+	</form>
+      </div>
+    </div>
+
+    <div id="pending-confirmation" class="card" hidden>
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Broadcasting Spend Transaction
+	  <i class="fa fa-spinner fa-spin"></i>
+	</span>
+      </h5>
+      <div class="card-body">
+	<p class="card-text">The following spend transaction is being broadcast:</p>
+	<%{ 'spend_transaction' {txid: true} }%>
+      </div>
+    </div>
+
+    <div id="spent" class="card" hidden>
+      <h5 class="card-header">Transaction Confirmed</h5>
+      <div class="card-body">
+	<p class="card-text">The following transaction was confirmed:</p>
+	<%{ 'spend_transaction' {txid: true} }%>
+      </div>
+    </div>
+
+    <%{ 'signature' {number: 1} }%>
+    <%{ 'signature' {number: 2} }%>
+  </div>
+  <div class="col-md-4">
+    <%{ 'connection' }%>
+  </div>
+</div>
+
+<%} %>
