@@ -205,9 +205,12 @@ function setDebuggingInfoText() {
     case /ChromeMetamaskhttp\:/.test(combinedConnectionInfo):
         info = "Using the Metamask with Chrome and a locally hosted dApp at http:// has been tested and should be stable. Check that you have the metamask extention turned on."
         break;
+    case /ChromeMetamaskhttps\:/.test(combinedConnectionInfo):
+        info = "Using the Metamask with Chrome and a the remotely hosted dapp has been tested and should be stable. Check that you have the metamask extention turned on."
+        break;
 	// individaul warnings
     case /Mist.*/.test(combinedConnectionInfo):
-	info = "Mist can connect with local nodes, but is currently incompatible with Trezor Connect. In theory, you can use the external scripts to interact with your Trezor and enter the inputs manually, but this is untested.";
+	info = "Mist can connect with local nodes, but it is currently incompatible with Trezor Connect. In theory, you can use the external scripts to interact with your Trezor and enter the inputs manually, but this is untested.";
 	break;
     case /IE.*/.test(combinedConnectionInfo):
 	info = "This dApp has not been tested with Internet Explorer, use at your own risk.";
@@ -221,6 +224,9 @@ function setDebuggingInfoText() {
         break;
     case /.*Parityhttp\:/.test(combinedConnectionInfo):
         info = "To use parity while accessing the dApp with a local webserver at http://, you need to allow access to parity by include this flag: <code>--jsonrpc-cors http://localhost:8435</code>";
+        break;
+    case /.*Gethfile\:/.test(combinedConnectionInfo):
+        info = "To use geth while accessing the dApp with file://, you need to allow access to parity by include this flag: <code>--rpccorsdomain null</code>";
         break;
     case /.*Gethhttp\:/.test(combinedConnectionInfo):
         info = "To authorize geth to allow connections from a local webserver include this flag: <code>--rpccorsdomain http://localhost:8435</code>";
