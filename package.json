@@ -1,5 +1,5 @@
 {
-  "name": "solidity-trezor-multisig",
+  "name": "unchained-ethereum-multisig",
   "version": "1.0.0",
   "description": "2/3-multisig Trezor-backed cold wallet.",
   "main": "truffle.js",
@@ -11,10 +11,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/unchained-capital/solidity-trezor-multisig.git"
+    "url": "git+https://github.com/unchained-capital/ethereum-multisig.git"
   },
   "keywords": [
-    "solidity"
+    "ethereum",
+    "solidity",
+    "multisig",
+    "trezor"
   ],
   "author": "Destry Saul <destry@unchained-capital.com>",
   "contributors": [
@@ -22,9 +25,9 @@
   ],
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/unchained-capital/solidity-trezor-multisig/issues"
+    "url": "https://github.com/unchained-capital/ethereum-multisig/issues"
   },
-  "homepage": "https://github.com/unchained-capital/solidity-trezor-multisig#readme",
+  "homepage": "https://github.com/unchained-capital/ethereum-multisig#readme",
   "devDependencies": {
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.0.0",
