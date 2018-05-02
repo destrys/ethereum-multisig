@@ -49,23 +49,29 @@ function enableExportSignerAddressForms() {
     $("form.export-signer-address-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
-	TrezorConnect.ethereumGetAddress(form.find('input.signer-bip32-path').val(), function(result) {
-	    if (result.success) {
-		console.info("Successfully exported account info:", result);
-		var address = "0x"+result.address;
-		var check   = validateSignerAddress(address);
-		if (check.valid) {
-		    form.find('.trezor-errors').html('');
-		    activateSigner(form.closest('.signer'), address);
-		} else {
-		    form.find('.trezor-errors').html(check.message);
-		    form.find('button').prop('disabled', true);
-		}
-	    } else {
-		console.error(result.error);
-		form.find('.trezor-errors').html(result.error);
-	    }
-	});
+	var wallet = form.find('select.signer-hardware-wallet').val()
+	if (wallet == 'Trezor') {
+     	    TrezorConnect.ethereumGetAddress(form.find('input.signer-bip32-path').val(), function(result) {
+       	        if (result.success) {
+		    console.info("Successfully exported account info:", result);
+		    var address = "0x"+result.address;
+		    var check   = validateSignerAddress(address);
+		    if (check.valid) {
+		        form.find('.trezor-errors').html('');
+		        activateSigner(form.closest('.signer'), address);
+		    } else {
+		        form.find('.trezor-errors').html(check.message);
+		        form.find('button').prop('disabled', true);
+		    }
+	        } else {
+		    console.error(result.error);
+		    form.find('.trezor-errors').html(result.error);
+	        }
+	    });
+        } else {
+	    // TODO: Export address from Ledger
+            console.log('LEDGER')
+	}
     });
 }
 

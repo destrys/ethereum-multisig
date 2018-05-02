@@ -1,6 +1,8 @@
 Ethereum Multisig
 =================
 
+**TODO:** Remove Trezor Specific Language
+
 This repository implements an Ethereum smart contract
 (`TrezorMultisig2of3`) which requires signed messages from 2/3 members
 of a multisig cold wallet with individual keys stored on
