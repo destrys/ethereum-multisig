@@ -70,7 +70,16 @@ function enableExportSignerAddressForms() {
 	    });
         } else {
 	    // TODO: Export address from Ledger
-            console.log('LEDGER')
+	    // TransportHID.create().then(transport => new LedgerEth(transport).getAddress("44'/60'/0'/0'/0").then(o => console.log(o.address)))
+            form.find('.trezor-errors').html("Ledger not supported yet");	    
+            // console.log('LEDGER')
+            // var z = TransportHTTP.create("w0w").then(transport => {
+            //     var ledgereth = new LedgerEth(transport);
+	    // 	ledgereth.getAddress("44'/0'/0'/0").then(o => console.log(o.address));
+	    // 	ledgereth.getAppConfiguration().then(l => console.log(l));
+	    // }
+	    // 					 );
+            // //getEthAddress().then(a => console.log("LEDGERADDRESS"+a));
 	}
     });
 }
