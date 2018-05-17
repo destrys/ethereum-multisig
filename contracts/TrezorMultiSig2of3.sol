@@ -78,11 +78,11 @@ contract TrezorMultiSig2of3 {
   // Send the given amount of ETH to the given destination using
   // the two triplets (v1, r1, s1) and (v2, r2, s2) as signatures.
   // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
-  function spend(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) public {
+  function spend(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2, bool isTrezor) public {
     // This require is handled by generateMessageToSign()
     // require(destination != address(this));
     require(this.balance >= value);
-    require(_validSignature(destination, value, v1, r1, s1, v2, r2, s2));
+    require(_validSignature(destination, value, v1, r1, s1, v2, r2, s2, isTrezor));
     spendNonce = spendNonce + 1;
     destination.transfer(value);
     Spent(destination, value);
@@ -91,8 +91,8 @@ contract TrezorMultiSig2of3 {
   // Confirm that the two signature triplets (v1, r1, s1) and (v2, r2, s2)
   // both authorize a spend of this contract's funds to the given
   // destination address.
-  function _validSignature(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) private constant returns (bool) {
-    bytes32 message = _messageToRecover(destination, value);
+  function _validSignature(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2, bool isTrezor) private constant returns (bool) {
+    bytes32 message = _messageToRecover(destination, value, isTrezor);
     address addr1   = ecrecover(message, v1+27, r1, s1);
     address addr2   = ecrecover(message, v2+27, r2, s2);
     require(_distinctOwners(addr1, addr2));
@@ -108,11 +108,16 @@ contract TrezorMultiSig2of3 {
   // The required Trezor signing prefix, the length of this
   // unsigned message, and the unsigned ascii message itself are
   // then concatenated and hashed with keccak256.
-  function _messageToRecover(address destination, uint256 value) private constant returns (bytes32) {
+  function _messageToRecover(address destination, uint256 value, bool isTrezor) private constant returns (bytes32) {
     bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
     bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
     bytes memory prefix = "\x19Ethereum Signed Message:\n";
-    return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+    if (isTrezor) {
+        return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+    } else {
+        prefix = "\x19Ethereum Signed Message:\n64";
+        return keccak256(prefix,unsignedMessageBytes);
+    }
   }
 
   
