@@ -386,7 +386,7 @@ function activateLedgerSignature(signature, message) {
 	signatureShow.find('.signature-full').html(enteredSignature.val());
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
-	var tmpV = parseInt(enteredSignature.substring(128,130))
+	var tmpV = parseInt(enteredSignature.val().substring(128,130))
 	signatureShow.find('.signature-v').html(extractLedgerV(tmpV));	
     }
     
@@ -460,7 +460,7 @@ function enableEnterSignatureForms() {
 	event.preventDefault();
 	var form = $(this);	
 	var wallet = form.find('select.signer-hardware-wallet').val()
-	if (wallet == 'Trezor') {	
+	if (wallet == 'Trezor') {
      	    activateSignature($(this).closest('.signature'));
 	} else if (wallet == 'Ledger') {
 	    activateLedgerSignature($(this).closest('.signature'));

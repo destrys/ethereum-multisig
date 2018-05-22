@@ -45,6 +45,10 @@
 	  <label for="signature-<%= number %>-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-<%= number %>-signature-input" aria-describedby="signer-<%= number %>-signature-help" required>
 	  <small id="signer-<%= number %>-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-<%= number %>">
+	    <option>Trezor</option>
+	    <option>Ledger</option>
+	  </select>	  
 	</div>
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
