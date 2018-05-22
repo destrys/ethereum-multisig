@@ -88112,14 +88112,12 @@ function enableSignMessageForms() {
 		}
 	    });
 	} else if (wallet == 'Ledger') {
-	    console.log('LEDGER');
-	    console.log(message)
 	    var ledgerMessage = stringToHex(message)
             TransportU2F.create().then(transport => {
                 var ledgereth = new LedgerEth(transport);
 	    	ledgereth.signPersonalMessage(form.find('input.signer-bip32-path').val(), ledgerMessage).then(function(result) {
 		    console.info("Successfully signed message: ", result);
-		    //activateSignature(form.closest('.signature'), result);
+		    activateLedgerSignature(form.closest('.signature'), result);
 	        }, function(reason) {
 		    console.error(reason);
 		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
@@ -88163,6 +88161,16 @@ function extractV(signature) {
     return "error"
 }
 
+function reverseV(v) {
+    if (v == 28) {
+	return "1c"
+    }
+    if (v == 27) {
+	return "1b"
+    }
+    console.error("V not a known value");
+    return "error"
+}
 //
 // == Signature Management ==
 //
@@ -88194,6 +88202,28 @@ function activateSignature(signature, message) {
 
     setAddedSignatureCount();
 }
+
+function activateLedgerSignature(signature, message) {
+    var signatureNew      = signature.find('.signature-new');
+    var bip32path         = signatureNew.find('input.signer-bip32-path');        
+    var enteredSignature  = signatureNew.find('input.signature-input');
+    signatureNew.prop('hidden',  true);
+
+    var signatureShow = signature.find('.signature-show-local');
+    signatureShow.find('.signature-full').html(message.r + message.s + reverseV(message.v));
+    signatureShow.find('.signature-r').html("0x" + message.r);
+    signatureShow.find('.signature-s').html("0x" + message.s);
+    signatureShow.find('.signature-v').html("0x0" + (message.v - 27));
+    signatureShow.find('.signature-bip32-path').html(bip32path.val());
+    
+
+    enteredSignature.val('');
+
+    signatureShow.prop('hidden', false);
+
+    setAddedSignatureCount();
+}
+
 
 
 function setAddedSignatureCount() {
