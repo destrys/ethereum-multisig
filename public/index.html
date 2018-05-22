@@ -269,11 +269,11 @@ contract TrezorMultiSig2of3 {
   // Send the given amount of ETH to the given destination using
   // the two triplets (v1, r1, s1) and (v2, r2, s2) as signatures.
   // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
-  function spend(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) public {
+  function spend(address destination, uint256 value, uint8 wallet_type_1, uint8 v1, bytes32 r1, bytes32 s1, uint8 wallet_type_2, uint8 v2, bytes32 r2, bytes32 s2) public {
     // This require is handled by generateMessageToSign()
     // require(destination != address(this));
     require(this.balance &gt;= value);
-    require(_validSignature(destination, value, v1, r1, s1, v2, r2, s2));
+    require(_validSignature(destination, value, wallet_type_1, v1, r1, s1, wallet_type_2, v2, r2, s2));
     spendNonce = spendNonce + 1;
     destination.transfer(value);
     Spent(destination, value);
@@ -282,10 +282,16 @@ contract TrezorMultiSig2of3 {
   // Confirm that the two signature triplets (v1, r1, s1) and (v2, r2, s2)
   // both authorize a spend of this contract's funds to the given
   // destination address.
-  function _validSignature(address destination, uint256 value, uint8 v1, bytes32 r1, bytes32 s1, uint8 v2, bytes32 r2, bytes32 s2) private constant returns (bool) {
-    bytes32 message = _messageToRecover(destination, value);
-    address addr1   = ecrecover(message, v1+27, r1, s1);
-    address addr2   = ecrecover(message, v2+27, r2, s2);
+  function _validSignature(address destination, uint256 value, uint8 wallet_type_1, uint8 v1, bytes32 r1, bytes32 s1, uint8 wallet_type_2, uint8 v2, bytes32 r2, bytes32 s2) private constant returns (bool) {
+    bytes32 message1 = _messageToRecover(destination, value, wallet_type_1);
+    bytes32 message2 = "";
+    if (wallet_type_1 == wallet_type_2) {
+      message2 = message1;
+    } else {
+      message2 = _messageToRecover(destination, value, wallet_type_2);
+    }
+    address addr1   = ecrecover(message1, v1+27, r1, s1);
+    address addr2   = ecrecover(message2, v2+27, r2, s2);
     require(_distinctOwners(addr1, addr2));
     return true;
   }
@@ -299,11 +305,20 @@ contract TrezorMultiSig2of3 {
   // The required Trezor signing prefix, the length of this
   // unsigned message, and the unsigned ascii message itself are
   // then concatenated and hashed with keccak256.
-  function _messageToRecover(address destination, uint256 value) private constant returns (bytes32) {
+  function _messageToRecover(address destination, uint256 value, uint8 wallet_type) private constant returns (bytes32) {
     bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
     bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
     bytes memory prefix = "\x19Ethereum Signed Message:\n";
-    return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+    if (wallet_type == 1) {
+        // TREZOR
+        return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+    } else if (wallet_type == 2) {
+        // LEDGER
+        prefix = "\x19Ethereum Signed Message:\n64";
+        return keccak256(prefix,unsignedMessageBytes);
+    } else {
+        revert();
+    }
   }
 
   

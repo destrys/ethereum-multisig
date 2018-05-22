@@ -11,7 +11,9 @@ if (process.argv.length != 3) {
 var bip32_path = process.argv[2];
 
 TransportHID.create().then(transport => {
-    new LedgerEth(transport).getAddress(bip32_path).then(o => {
-	console.log(o.address)
+    return new LedgerEth(transport).getAddress(bip32_path, true, true).then(o => {
+	console.log("Address: " +o.address);
+	console.log("Public Key: " +o.publicKey);
+	console.log("ChainCode: " +o.chainCode);		
     })
 })

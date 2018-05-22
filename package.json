@@ -30,6 +30,7 @@
   "homepage": "https://github.com/unchained-capital/ethereum-multisig#readme",
   "devDependencies": {
     "@ledgerhq/hw-app-eth": "^4.7.3",
+    "@ledgerhq/hw-app-btc": "^4.12.0",
     "@ledgerhq/hw-transport-node-hid": "^4.7.6",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.0.0",
