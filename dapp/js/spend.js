@@ -322,12 +322,12 @@ function extractV(signature) {
     return "error"
 }
 
-function reverseV(v) {
+function extractLedgerV(v) {
     if (v == 28) {
-	return "1c"
+	return "0x01"
     }
     if (v == 27) {
-	return "1b"
+	return "0x00"
     }
     console.error("V not a known value");
     return "error"
@@ -344,6 +344,7 @@ function activateSignature(signature, message) {
 
     if (message) {
 	var signatureShow = signature.find('.signature-show-local');
+        signatureShow.find('.wallet_type').html("trezor");	
 	signatureShow.find('.signature-full').html(message.signature);
 	signatureShow.find('.signature-r').html(extractR(message.signature));
 	signatureShow.find('.signature-s').html(extractS(message.signature));
@@ -351,6 +352,7 @@ function activateSignature(signature, message) {
 	signatureShow.find('.signature-bip32-path').html(bip32path.val());	
     } else {
 	var signatureShow = signature.find('.signature-show-remote');
+        signatureShow.find('.wallet_type').html("trezor");		
 	signatureShow.find('.signature-full').html(enteredSignature.val());
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
@@ -370,12 +372,23 @@ function activateLedgerSignature(signature, message) {
     var enteredSignature  = signatureNew.find('input.signature-input');
     signatureNew.prop('hidden',  true);
 
-    var signatureShow = signature.find('.signature-show-local');
-    signatureShow.find('.signature-full').html(message.r + message.s + reverseV(message.v));
-    signatureShow.find('.signature-r').html("0x" + message.r);
-    signatureShow.find('.signature-s').html("0x" + message.s);
-    signatureShow.find('.signature-v').html("0x0" + (message.v - 27));
-    signatureShow.find('.signature-bip32-path').html(bip32path.val());
+    if (message) {
+	var signatureShow = signature.find('.signature-show-local');
+	signatureShow.find('.signature-full').html(message.r + message.s + message.v);
+	signatureShow.find('.wallet_type').html("ledger");
+	signatureShow.find('.signature-r').html("0x" + message.r);
+	signatureShow.find('.signature-s').html("0x" + message.s);
+	signatureShow.find('.signature-v').html(extractLedgerV(message.v));
+	signatureShow.find('.signature-bip32-path').html(bip32path.val());
+    } else {
+	var signatureShow = signature.find('.signature-show-remote');
+        signatureShow.find('.wallet_type').html("ledger");		
+	signatureShow.find('.signature-full').html(enteredSignature.val());
+	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
+	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
+	var tmpV = parseInt(enteredSignature.substring(128,130))
+	signatureShow.find('.signature-v').html(extractLedgerV(tmpV));	
+    }
     
 
     enteredSignature.val('');
@@ -405,6 +418,14 @@ function addedSignatureCount() {
 
 
 function currentSignatures() {
+    var wallet = $(".wallet_type").map(function() {
+	var tmpWallet = $(this).text();
+	if (tmpWallet == "trezor") {
+	    return 1
+	} else if (tmpWallet == "ledger") {
+	    return 2
+	}
+    }).toArray().filter(String);
     var r = $(".signature-r").map(function() {
 	return $(this).text()
     }).toArray().filter(String);
@@ -414,7 +435,7 @@ function currentSignatures() {
     var v = $(".signature-v").map(function() {
 	return $(this).text()
     }).toArray().filter(String);
-    return {r: r, s: s, v: v}
+    return {wallet: wallet, r: r, s: s, v: v}
 }
 
 function enableRemoveSignatureForms() {
@@ -423,6 +444,7 @@ function enableRemoveSignatureForms() {
 	var signatureNew  = $(this).closest('.signature').find('.signature-new');
 	var signatureShow = $(this).closest('.signature-show');
 	signatureShow.prop('hidden', true);
+	signatureShow.find('.wallet_type').html('');	
 	signatureShow.find('.signature-full').html('');
 	signatureShow.find('.signature-bip32-path').html('');
 	signatureShow.find('.signature-r').html('');
@@ -436,7 +458,13 @@ function enableRemoveSignatureForms() {
 function enableEnterSignatureForms() {
     $("form.enter-signer-signature-form").submit(function(event) {
 	event.preventDefault();
-	activateSignature($(this).closest('.signature'));
+	var form = $(this);	
+	var wallet = form.find('select.signer-hardware-wallet').val()
+	if (wallet == 'Trezor') {	
+     	    activateSignature($(this).closest('.signature'));
+	} else if (wallet == 'Ledger') {
+	    activateLedgerSignature($(this).closest('.signature'));
+	}
     });
 }
 
@@ -464,8 +492,8 @@ function broadcastSpend(callback, errback) {
 			contract.spend.sendTransaction(
 			    destination, 
 			    amount, 
-			    sigs.v[0], sigs.r[0], sigs.s[0], 
-			    sigs.v[1], sigs.r[1], sigs.s[1], {
+			    sigs.wallet[0], sigs.v[0], sigs.r[0], sigs.s[0], 
+			    sigs.wallet[1], sigs.v[1], sigs.r[1], sigs.s[1], {
 				from: account,
 				gas: SPEND_GAS_LIMIT,
 			    }, function(txError, txid) {
