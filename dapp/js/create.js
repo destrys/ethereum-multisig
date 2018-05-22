@@ -69,17 +69,24 @@ function enableExportSignerAddressForms() {
 	        }
 	    });
         } else {
-	    // TODO: Export address from Ledger
-	    // TransportHID.create().then(transport => new LedgerEth(transport).getAddress("44'/60'/0'/0'/0").then(o => console.log(o.address)))
-            form.find('.trezor-errors').html("Ledger not supported yet");	    
-            // console.log('LEDGER')
-            // var z = TransportHTTP.create("w0w").then(transport => {
-            //     var ledgereth = new LedgerEth(transport);
-	    // 	ledgereth.getAddress("44'/0'/0'/0").then(o => console.log(o.address));
-	    // 	ledgereth.getAppConfiguration().then(l => console.log(l));
-	    // }
-	    // 					 );
-            // //getEthAddress().then(a => console.log("LEDGERADDRESS"+a));
+            var z = TransportU2F.create().then(transport => {
+                var ledgereth = new LedgerEth(transport);
+	    	ledgereth.getAddress(form.find('input.signer-bip32-path').val()).then(function(result) {
+                    console.info("Successfully exported account info:", result.address);
+		    var address = result.address;
+		    var check   = validateSignerAddress(address);
+		    if (check.valid) {
+		        form.find('.trezor-errors').html('');
+		        activateSigner(form.closest('.signer'), address);
+		    } else {
+		        form.find('.trezor-errors').html(check.message);
+		        form.find('button').prop('disabled', true);
+		    }
+	        }, function(reason) {
+		    console.error(reason);
+		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+	        });
+	    });
 	}
     });
 }

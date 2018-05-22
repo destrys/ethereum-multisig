@@ -26,6 +26,7 @@ TRUFFLE    := $(NODE_DIR)/truffle/build/cli.bundled.js
 TESTRPC    := $(NODE_DIR)/ethereumjs-testrpc/build/cli.node.js
 BROWSERIFY := $(NODE_DIR)/browserify/bin/cmd.js
 SERVE      := $(NODE_DIR)/serve/bin/serve.js
+HTTP-SERVER := $(NODE_DIR)/http-server/bin/http-server
 PIP        := $(VENV_DIR)/bin/pip
 MYTH       := $(VENV_DIR)/bin/myth
 PYTHON3    := $(shell command -v python3 2> /dev/null)
@@ -42,7 +43,7 @@ CSS += dapp/css/cards.css
 JS := $(NODE_DIR)/jquery/dist/jquery.js $(NODE_DIR)/bootstrap/dist/js/bootstrap.js $(NODE_DIR)/tether/dist/js/tether.js $(NODE_DIR)/highlightjs/highlight.pack.js
 JS += dapp/js/requires.js dapp/js/utils.js dapp/js/connection.js dapp/js/bip32.js dapp/js/create.js dapp/js/spend.js
 
-JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r ethereumjs-wallet -r @ledgerhq/hw-app-eth
+JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r ethereumjs-wallet -r @ledgerhq/hw-app-eth -r @ledgerhq/hw-transport-u2f
 
 #
 # == Top-Level Targets ==
@@ -70,6 +71,9 @@ testrpc:
 
 server:
 	cd public && $(SERVE) -p $(DAPP_PORT)
+
+https-server:
+	cd public && $(SERVE) -T -p $(DAPP_PORT)
 
 freeze:
 	$(NPM) shrinkwrap

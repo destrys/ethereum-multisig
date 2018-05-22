@@ -259,18 +259,46 @@ function enableSignMessageForms() {
     $("form.extract-signer-signature-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
+	var wallet = form.find('select.signer-hardware-wallet').val()	
 	var message = $('#spend-message').html().slice(2);
-	TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
-	    if (result.success) {
-		console.info("Successfully signed message: ", result);
-		activateSignature(form.closest('.signature'), result);
-		// parse signature into r,s,v
-	    } else {
-		console.error(result.error);
-		form.find('.trezor-errors').html(result.error);
-	    }
-	});
+	if (wallet == 'Trezor') {	
+     	    TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
+		if (result.success) {
+		    console.info("Successfully signed message: ", result);
+		    activateSignature(form.closest('.signature'), result);
+		    // parse signature into r,s,v
+		} else {
+		    console.error(result.error);
+		    form.find('.trezor-errors').html(result.error);
+		}
+	    });
+	} else if (wallet == 'Ledger') {
+	    var ledgerMessage = stringToHex(message)
+            TransportU2F.create().then(transport => {
+                var ledgereth = new LedgerEth(transport);
+	    	ledgereth.signPersonalMessage(form.find('input.signer-bip32-path').val(), ledgerMessage).then(function(result) {
+		    console.info("Successfully signed message: ", result);
+		    //activateSignature(form.closest('.signature'), result);
+	        }, function(reason) {
+		    console.error(reason);
+		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+	        });
+	    });
+	}
     });
+}
+
+function stringToHex (tmp) {
+    var str = '',
+        i = 0,
+        tmp_len = tmp.length,
+        c;
+ 
+    for (; i < tmp_len; i += 1) {
+        c = tmp.charCodeAt(i);
+        str += c.toString(16);
+    }
+    return str;
 }
 
 
