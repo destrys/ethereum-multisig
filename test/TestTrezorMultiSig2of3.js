@@ -21,23 +21,23 @@ var unsignedMessage2      = "9bd9f4b563191943c9008219a2279fccf4d38eafe5e01e6fdfc
 // The following addresses and signatures were generated with a trezor with wallet words:
 // merge alley   lucky   axis penalty manage latin   gasp  virus    captain wheel deal
 // chase fragile chapter boss zero    dirt   stadium tooth physical valve   kid   plunge
-var trezorAddress1  = "0x8ed1e7ddd929b53e776484e645ba775ad8f52a63"; // m/44'/6626'/0'/0/0
-var trezorSig1      = "0xac0d976bc3d374c2e0d09e0e616c29ae1fd083afff53b3abea8e2dce44b5807e27e40fe09dcd40f4dc684991fb3ff2d9d7df1edc3a1c7e005e8ea40f138c98081c";
+var trezorAddress1  = "0x757e3B637Ed4649A04cDb83D14c73bE6a6991019"; // m/44'/60'/600'/0/0
+var trezorSig1      = "5b4198d2b4c8a7d1e16166defd97e752703cd6ada30d38246227a9575241c38837010f853738a32a378fbd94d0320b2bb7c4bda6b7dd1df4a24cf2842b0756e51c";
 var trezorV1        = "0x01";
-var trezorR1        = "0xac0d976bc3d374c2e0d09e0e616c29ae1fd083afff53b3abea8e2dce44b5807e";
-var trezorS1        = "0x27e40fe09dcd40f4dc684991fb3ff2d9d7df1edc3a1c7e005e8ea40f138c9808";
+var trezorR1        = "0x5b4198d2b4c8a7d1e16166defd97e752703cd6ada30d38246227a9575241c388";
+var trezorS1        = "0x37010f853738a32a378fbd94d0320b2bb7c4bda6b7dd1df4a24cf2842b0756e5";
 
-var trezorAddress2  = "0xef12b1c5c791c29d94ddfa621660bc079e093d27"; // m/44'/6627'/0'/0/0
-var trezorSig2      = "0x7b1f0cee5967adabadf7ec09abfe07059192bf6f86c3cb21d06524fa6711653c2ce3bde36e476c01af434ca31dcf16ac7ff3b146cf994921433dc8504eece76b1c";
+var trezorAddress2  = "0xa63B1930cBDd89ece8E1Db05a21C95aB1Ec35DbF"; // m/44'/60'/601'/0/0
+var trezorSig2      = "20c2633e06539408a4e44729921b450d2e314557dcc77fe18f1e5ad2000f385c275397293a8bda557ae2af61ce95d4619eee802d62a236c7bbc40f1f7ff024421c";
 var trezorV2        = "0x01";
-var trezorR2        = "0x7b1f0cee5967adabadf7ec09abfe07059192bf6f86c3cb21d06524fa6711653c";
-var trezorS2        = "0x2ce3bde36e476c01af434ca31dcf16ac7ff3b146cf994921433dc8504eece76b";
+var trezorR2        = "0x20c2633e06539408a4e44729921b450d2e314557dcc77fe18f1e5ad2000f385c";
+var trezorS2        = "0x275397293a8bda557ae2af61ce95d4619eee802d62a236c7bbc40f1f7ff02442";
 
-var trezorAddress3  = "0x2909ee04bc57f06dfccd1f9e77aa58c2c61e1d2f"; // m/44'/6628'/0'/0/0
-var trezorSig3      = "0xca85f157f2df89f1395a3df7f3fb9108ea5cacef8f8260a17a021120e4edd53b1975a2fb6beb4d07594ac8adb56cc3980e96e0ccac8cc5e0d5c75d1bb174e8651c";
-var trezorV3        = "0x01";
-var trezorR3        = "0xca85f157f2df89f1395a3df7f3fb9108ea5cacef8f8260a17a021120e4edd53b";
-var trezorS3        = "0x1975a2fb6beb4d07594ac8adb56cc3980e96e0ccac8cc5e0d5c75d1bb174e865";
+var trezorAddress3  = "0x6519E8D43F81cBD3739E0970DF2e874c188586a6"; // m/44'/60'/602'/0/0
+var trezorSig3      = "ea2cbefec318cdb8141a940c033971107d9e7a60f83b7aecc687849ae703428f31a10acbbb31d1724bcfed79900e63f85dc6b0a82c0b7bcca611c185430c8b951b";
+var trezorV3        = "0x00";
+var trezorR3        = "0xea2cbefec318cdb8141a940c033971107d9e7a60f83b7aecc687849ae703428f";
+var trezorS3        = "0x31a10acbbb31d1724bcfed79900e63f85dc6b0a82c0b7bcca611c185430c8b95";
 
 // Ledger Addresses and signatures using the wallet words above:
 var ledgerAddress1  = "0x757e3B637Ed4649A04cDb83D14c73bE6a6991019"; // m/44'/60'/600'/0/0
@@ -57,20 +57,22 @@ var ledgerS3        = "0x0948b16d5095a0852277ea0f2159cdf1a0002726466828bede2376c
 
 
 // These signed messages are for the second spend tests.
-var trezorSig1_1      = "0x71164425e6c5a0b68be2145f7391916d5dc3e6355c5b312b6f6fdea8aa73302b19b7e2a1ed13b96b64fcbe628bb1a2ae6757345cbcdd64372599a581f53e3f981c";
+var trezorSig1_1      = "e9946c4ad8202a1e58ecef6bbfbb8567863c9a0075215f957506b0638636e08f79d17ef2c3dcf3d272d5275eb068d8b6b264aa416e494eca02a28e7293baa4451c";
 var trezorV1_1        = "0x01";
-var trezorR1_1        = "0x71164425e6c5a0b68be2145f7391916d5dc3e6355c5b312b6f6fdea8aa73302b";
-var trezorS1_1        = "0x19b7e2a1ed13b96b64fcbe628bb1a2ae6757345cbcdd64372599a581f53e3f98";
+var trezorR1_1        = "0xe9946c4ad8202a1e58ecef6bbfbb8567863c9a0075215f957506b0638636e08f";
+var trezorS1_1        = "0x79d17ef2c3dcf3d272d5275eb068d8b6b264aa416e494eca02a28e7293baa445";
 
-var trezorSig2_1      = "0xe5c977b8d96b684e1fe4a78cefcd4a55b0c606b0aa77d7df6cdb3e6371693d267fd3f50325405a7acd37c995dc29c2f667b3d1338737b409ceecb061dfe7daa71b";
-var trezorV2_1        = "0x00";
-var trezorR2_1        = "0xe5c977b8d96b684e1fe4a78cefcd4a55b0c606b0aa77d7df6cdb3e6371693d26";
-var trezorS2_1        = "0x7fd3f50325405a7acd37c995dc29c2f667b3d1338737b409ceecb061dfe7daa7";
+var trezorSig2_1      = "188f581b7c31e7f23f74a11d6de46130d429aca7082c8f682a9a68a1825ded1b2c1d445227719f2781321cb602e5cac8c971c12faec4d744b4339ade9f2f128b1c";
+var trezorV2_1        = "0x01";
+var trezorR2_1        = "0x188f581b7c31e7f23f74a11d6de46130d429aca7082c8f682a9a68a1825ded1b";
+var trezorS2_1        = "0x2c1d445227719f2781321cb602e5cac8c971c12faec4d744b4339ade9f2f128b";
 
-var trezorSig3_1      = "0x9f71c5416f93fd5e082f41e72367367d32c5c6fc5ea0424aa762f1457cd0b90f22ec69c498a7e7225c83b5877a0ea96e760cf319dfa8bbc7fc0a5c771c38a9f11c";
-var trezorV3_1        = "0x01";
-var trezorR3_1        = "0x9f71c5416f93fd5e082f41e72367367d32c5c6fc5ea0424aa762f1457cd0b90f";
-var trezorS3_1        = "0x22ec69c498a7e7225c83b5877a0ea96e760cf319dfa8bbc7fc0a5c771c38a9f1";
+var trezorSig3_1      = "42859b0a22477cf875d5a092276d963f3d44335a15b10df9e2b5d37e99a6847a0cece64119e9edade06ae73cda15311aa6134be5f18740255bebb9f9a155b4eb1b";
+var trezorV3_1        = "0x00";
+var trezorR3_1        = "0x42859b0a22477cf875d5a092276d963f3d44335a15b10df9e2b5d37e99a6847a";
+var trezorS3_1        = "0x0cece64119e9edade06ae73cda15311aa6134be5f18740255bebb9f9a155b4eb";
+
+
 
 
 function makeDeposit(accounts, testContract) {
