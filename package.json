@@ -41,12 +41,14 @@
     "keccak": "^1.4.0",
     "pejs": "^0.6.5",
     "popper.js": "^1.12.9",
+    "solium": "^1.1.7",
     "tether": "^1.4.3",
     "trezor.js-node": "^6.11.3",
     "truffle": "^4.0.6",
     "web3": "^0.20.4"
   },
   "dependencies": {
+    "secp256k1": "^3.5.0",
     "serve": "^6.4.1"
   }
 }
