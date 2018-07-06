@@ -1,4 +1,4 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.24;
 
 // A 2/3 multisig contract which is compatible with Trezor-signed messages.
 //
@@ -35,19 +35,19 @@ contract TrezorMultiSig2of3 {
 
   // Contract Versioning
   uint256 public unchainedMultisigVersionMajor = 1;
-  uint256 public unchainedMultisigVersionMinor = 0;   
-  
+  uint256 public unchainedMultisigVersionMinor = 0;
+
   // An event sent when funds are received.
   event Funded(uint new_balance);
-  
+
   // An event sent when a spend is triggered to the given address.
   event Spent(address to, uint transfer);
 
   // Instantiate a new Trezor Multisig 2 of 3 contract owned by the
   // three given addresses
-  function TrezorMultiSig2of3(address owner1, address owner2, address owner3) public {
+  constructor(address owner1, address owner2, address owner3) public {
     address zeroAddress = 0x0;
-    
+
     require(owner1 != zeroAddress);
     require(owner2 != zeroAddress);
     require(owner3 != zeroAddress);
@@ -55,7 +55,7 @@ contract TrezorMultiSig2of3 {
     require(owner1 != owner2);
     require(owner2 != owner3);
     require(owner1 != owner3);
-    
+
     owners[owner1] = true;
     owners[owner2] = true;
     owners[owner3] = true;
@@ -63,18 +63,18 @@ contract TrezorMultiSig2of3 {
 
   // The fallback function for this contract.
   function() public payable {
-    Funded(this.balance);
+    emit Funded(address(this).balance);
   }
 
   // Generates the message to sign given the output destination address and amount.
   // includes this contract's address and a nonce for replay protection.
   // One option to  independently verify: https://leventozturk.com/engineering/sha3/ and select keccak
-  function generateMessageToSign(address destination, uint256 value) public constant returns (bytes32) {
+  function generateMessageToSign(address destination, uint256 value) public view returns (bytes32) {
     require(destination != address(this));
     bytes32 message = keccak256(spendNonce, this, value, destination);
     return message;
   }
-  
+
   // Send the given amount of ETH to the given destination using
   // the two triplets (v1, r1, s1) and (v2, r2, s2) as signatures.
   // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
@@ -82,10 +82,11 @@ contract TrezorMultiSig2of3 {
     // This require is handled by generateMessageToSign()
     // require(destination != address(this));
     require(this.balance >= value);
+    require(address(this).balance >= value);
     require(_validSignature(destination, value, wallet_type_1, v1, r1, s1, wallet_type_2, v2, r2, s2));
     spendNonce = spendNonce + 1;
     destination.transfer(value);
-    Spent(destination, value);
+    emit Spent(destination, value);
   }
 
   // Confirm that the two signature triplets (v1, r1, s1) and (v2, r2, s2)
@@ -102,6 +103,7 @@ contract TrezorMultiSig2of3 {
     address addr1   = ecrecover(message1, v1+27, r1, s1);
     address addr2   = ecrecover(message2, v2+27, r2, s2);
     require(_distinctOwners(addr1, addr2));
+
     return true;
   }
 
@@ -130,9 +132,8 @@ contract TrezorMultiSig2of3 {
     }
   }
 
-  
   // Confirm the pair of addresses as two distinct owners of this contract.
-  function _distinctOwners(address addr1, address addr2) private constant returns (bool) {
+  function _distinctOwners(address addr1, address addr2) private view returns (bool) {
     // Check that both addresses are different
     require(addr1 != addr2);
     // Check that both addresses are owners
@@ -141,21 +142,20 @@ contract TrezorMultiSig2of3 {
     return true;
   }
 
-
   // Construct the byte representation of the ascii-encoded
   // hashed message written in hex.
-   function _hashToAscii(bytes32 hash) private pure returns (bytes) {
+  function _hashToAscii(bytes32 hash) private pure returns (bytes) {
     bytes memory s = new bytes(64);
     for (uint i = 0; i < 32; i++) {
-      byte b  = hash[i];
+      byte  b = hash[i];
       byte hi = byte(uint8(b) / 16);
       byte lo = byte(uint8(b) - 16 * uint8(hi));
-      s[2*i]   = _char(hi);
-      s[2*i+1] = _char(lo);            
+      s[2*i] = _char(hi);
+      s[2*i+1] = _char(lo);
     }
-    return s;    
+    return s;
   }
-  
+
   // Convert from byte to ASCII of 0-f
   // http://www.unicode.org/charts/PDF/U0000.pdf
   function _char(byte b) private pure returns (byte c) {
