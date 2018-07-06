@@ -1,16 +1,13 @@
 {
-  "extends": "solium:recommended",
-  "plugins": [
-    "security"
-  ],
-  "rules": {
-    "quotes": [
-      "error",
-      "double"
+    "extends": "solium:recommended",
+    "plugins": [
+	"security"
     ],
-    "indentation": [
-      "error",
-      2
-    ]
-  }
+    "rules": {
+	"indentation": 0,	
+	"quotes": [
+	    "error",
+	    "double"
+	]
+    }
 }

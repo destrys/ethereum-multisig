@@ -68,22 +68,44 @@ contract TrezorMultiSig2of3 {
 
   // Generates the message to sign given the output destination address and amount.
   // includes this contract's address and a nonce for replay protection.
-  // One option to  independently verify: https://leventozturk.com/engineering/sha3/ and select keccak
-  function generateMessageToSign(address destination, uint256 value) public view returns (bytes32) {
+  // One option to independently verify:
+  //     https://leventozturk.com/engineering/sha3/ and select keccak
+  function generateMessageToSign(address destination,
+				 uint256 value) public view returns (bytes32) {
     require(destination != address(this));
-    bytes32 message = keccak256(spendNonce, this, value, destination);
+    bytes32 message = keccak256(abi.encodePacked(spendNonce,
+						 this,
+						 value,
+						 destination));
     return message;
   }
 
   // Send the given amount of ETH to the given destination using
   // the two triplets (v1, r1, s1) and (v2, r2, s2) as signatures.
   // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
-  function spend(address destination, uint256 value, uint8 wallet_type_1, uint8 v1, bytes32 r1, bytes32 s1, uint8 wallet_type_2, uint8 v2, bytes32 r2, bytes32 s2) public {
+  function spend(address destination,
+		 uint256 value,
+		 uint8 wallet_type_1,
+		 uint8 v1, bytes32 r1,
+		 bytes32 s1,
+		 uint8 wallet_type_2,
+		 uint8 v2,
+		 bytes32 r2,
+		 bytes32 s2
+		 ) public {
     // This require is handled by generateMessageToSign()
     // require(destination != address(this));
-    require(this.balance >= value);
     require(address(this).balance >= value);
-    require(_validSignature(destination, value, wallet_type_1, v1, r1, s1, wallet_type_2, v2, r2, s2));
+    require(_validSignature(destination,
+			    value,
+			    wallet_type_1,
+			    v1,
+			    r1,
+			    s1,
+			    wallet_type_2,
+			    v2,
+			    r2,
+			    s2));
     spendNonce = spendNonce + 1;
     destination.transfer(value);
     emit Spent(destination, value);
@@ -92,7 +114,16 @@ contract TrezorMultiSig2of3 {
   // Confirm that the two signature triplets (v1, r1, s1) and (v2, r2, s2)
   // both authorize a spend of this contract's funds to the given
   // destination address.
-  function _validSignature(address destination, uint256 value, uint8 wallet_type_1, uint8 v1, bytes32 r1, bytes32 s1, uint8 wallet_type_2, uint8 v2, bytes32 r2, bytes32 s2) private constant returns (bool) {
+  function _validSignature(address destination,
+			   uint256 value,
+			   uint8 wallet_type_1,
+			   uint8 v1,
+			   bytes32 r1,
+			   bytes32 s1,
+			   uint8 wallet_type_2,
+			   uint8 v2,
+			   bytes32 r2,
+			   bytes32 s2) private view returns (bool) {
     bytes32 message1 = _messageToRecover(destination, value, wallet_type_1);
     bytes32 message2 = "";
     if (wallet_type_1 == wallet_type_2) {
@@ -100,8 +131,8 @@ contract TrezorMultiSig2of3 {
     } else {
       message2 = _messageToRecover(destination, value, wallet_type_2);
     }
-    address addr1   = ecrecover(message1, v1+27, r1, s1);
-    address addr2   = ecrecover(message2, v2+27, r2, s2);
+    address addr1 = ecrecover(message1, v1+27, r1, s1);
+    address addr2 = ecrecover(message2, v2+27, r2, s2);
     require(_distinctOwners(addr1, addr2));
 
     return true;
@@ -116,17 +147,23 @@ contract TrezorMultiSig2of3 {
   // The required Trezor signing prefix, the length of this
   // unsigned message, and the unsigned ascii message itself are
   // then concatenated and hashed with keccak256.
-  function _messageToRecover(address destination, uint256 value, uint8 wallet_type) private constant returns (bytes32) {
+  function _messageToRecover(address destination,
+			     uint256
+			     value,
+			     uint8 wallet_type
+			     ) private view returns (bytes32) {
     bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
     bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
     bytes memory prefix = "\x19Ethereum Signed Message:\n";
     if (wallet_type == 1) {
         // TREZOR
-        return keccak256(prefix,bytes1(unsignedMessageBytes.length),unsignedMessageBytes);
+        return keccak256(abi.encodePacked(prefix,
+					  bytes1(unsignedMessageBytes.length),
+					  unsignedMessageBytes));
     } else if (wallet_type == 2) {
         // LEDGER
         prefix = "\x19Ethereum Signed Message:\n64";
-        return keccak256(prefix,unsignedMessageBytes);
+        return keccak256(abi.encodePacked(prefix,unsignedMessageBytes));
     } else {
         revert();
     }

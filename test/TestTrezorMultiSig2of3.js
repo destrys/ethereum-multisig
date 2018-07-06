@@ -12,7 +12,7 @@ var trezorType = 1;
 var ledgerType = 2;
 
 // Expected Error test for a failed require()
-var vmExceptionText = "VM Exception while processing transaction: invalid opcode";
+var vmExceptionTextRevert = "VM Exception while processing transaction: revert";
 
 var contractAddress       = "0x1b95e1c82765f1b410499214939fb0afd2da9328"; 
 var unsignedMessage       = "142e6535b34535af988d6fe022dba9100dabc41fa9de26962f4e5b6e79e9d041";
@@ -106,19 +106,19 @@ contract('When constructing', function(accounts) {
 
     it("raises an error with three arguments when the first two are duplicates", function() {
 	return TrezorMultiSig2of3.new(accounts[1], accounts[1], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, vmExceptionText);
+	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
     it("raises an error with three arguments when the last two are duplicates", function() {
 	return TrezorMultiSig2of3.new(accounts[1], accounts[3], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, vmExceptionText);
+	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
     it("raises an error with three arguments when the first and third are duplicates", function() {
 	return TrezorMultiSig2of3.new(accounts[1], accounts[2], accounts[1]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, vmExceptionText);
+	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
@@ -198,8 +198,8 @@ contract('When first created', function(accounts) {
 
     if (firstInvocation(accounts)) {
 	it("raises an error when using the contract address as a destination in the message to sign", function() {
-   	    return testContract.generateMessageToSign.call(contractAddress, firstSpend).then(function(instance) {assert(false, vmExceptionText)}).catch(function(e) {
-	    return assert.equal(e.message, vmExceptionText);
+   	    return testContract.generateMessageToSign.call(contractAddress, firstSpend).then(function(instance) {assert(false, vmExceptionTextRevert)}).catch(function(e) {
+	    return assert.equal(e.message, vmExceptionTextRevert);
 	    });
 	});
     }
@@ -509,7 +509,7 @@ contract('When already funded', function(accounts) {
 	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, badTrezorR3, trezorS3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
-	    	assert.equal(e.message, vmExceptionText);
+	    	assert.equal(e.message, vmExceptionTextRevert);
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), deposit.toString());
 	    	var expectedTransfer = new web3.BigNumber(0)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -539,7 +539,7 @@ contract('When already funded', function(accounts) {
 	    return testContract.spend.sendTransaction(accounts[4], transferAmount, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
-	    	assert.equal(e.message, vmExceptionText);
+	    	assert.equal(e.message, vmExceptionTextRevert);
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), deposit.toString());
 	    	var expectedTransfer = new web3.BigNumber(0)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -572,7 +572,7 @@ contract('When already funded', function(accounts) {
 	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, wrongV3, wrongR3, wrongS3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
-	    	assert.equal(e.message, vmExceptionText);
+	    	assert.equal(e.message, vmExceptionTextRevert);
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), deposit.toString());
 	    	var expectedTransfer = new web3.BigNumber(0)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -602,7 +602,7 @@ contract('When already funded', function(accounts) {
 	    return testContract.spend.sendTransaction(badDestination, firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
-	    	assert.equal(e.message, vmExceptionText);
+	    	assert.equal(e.message, vmExceptionTextRevert);
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), deposit.toString());
 	    	var expectedTransfer = new web3.BigNumber(0)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -621,21 +621,30 @@ contract('When already spent once', function(accounts) {
 	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
-	    testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) {
-		return true;
-	    });
 	});
     });
 
     if (firstInvocation(accounts)) {
 	it("has an incremented spendNonce value", function() {
-	    return testContract.spendNonce.call().then(function(nonce) {
-		assert.equal(nonce, 1);
-	    });
+	    return testContract.spend.sendTransaction(accounts[4],
+						      firstSpend,
+						      trezorType,
+						      trezorV1,
+						      trezorR1,
+						      trezorS1,
+						      trezorType,
+						      trezorV3,
+						      trezorR3,
+						      trezorS3)
+		.then(function(instance) {
+   		    return testContract.spendNonce.call().then(function(nonce) {
+		        assert.equal(nonce, 1);
+		    });
+		});
 	});
     }
 });
-
+																				       
 contract('When already spent once', function(accounts) {
 
     var testContract;
@@ -644,17 +653,26 @@ contract('When already spent once', function(accounts) {
 	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
-	    testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) {
-		return true;
-	    });
 	});
     });
 
     if (firstInvocation(accounts)) {
 	it("returns the expected message to sign", function() {
-	    return testContract.generateMessageToSign.call(accounts[5], secondSpend).then(function(message) {
-                assert.equal(message,"0x9bd9f4b563191943c9008219a2279fccf4d38eafe5e01e6fdfcf4097a2a2d727");
-	    });
+	    return testContract.spend.sendTransaction(accounts[4],
+						      firstSpend,
+						      trezorType,
+						      trezorV1,
+						      trezorR1,
+						      trezorS1,
+						      trezorType,
+						      trezorV3,
+						      trezorR3,
+						      trezorS3)
+		.then(function(instance) {	    
+		    return testContract.generateMessageToSign.call(accounts[5], secondSpend).then(function(message) {
+			assert.equal(message,"0x9bd9f4b563191943c9008219a2279fccf4d38eafe5e01e6fdfcf4097a2a2d727");
+		    });
+		});
 	});
     }
 });
@@ -710,7 +728,7 @@ contract('When already spent once', function(accounts) {
 	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV2, trezorR2, trezorS2).then(function() {
 	    	assert(false, "Expected error when spending"); 
 	    }).catch(function(e) {
-	    	assert.equal(e.message, vmExceptionText);
+	    	assert.equal(e.message, vmExceptionTextRevert);
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedContractBalance.toString());
 	    	var expectedTransfer = new web3.BigNumber(firstSpend)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)

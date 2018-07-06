@@ -1,4 +1,4 @@
-var trezor = require("trezor.js-node");
+var trezor = require("trezor.js");
 
 function jsonize(obj) {
     // console.info(JSON.stringify);
