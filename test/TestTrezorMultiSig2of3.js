@@ -1,15 +1,8 @@
-var contract_utils = require("../src/contract_utils");
-var trezor_utils = require("../src/trezor_utils");
-
 var TrezorMultiSig2of3 = artifacts.require("TrezorMultiSig2of3");
 
 var deposit = 1000; // wei
 var firstSpend = 100;
 var secondSpend = 900;
-
-// Wallet type arguements
-var trezorType = 1;
-var ledgerType = 2;
 
 // Expected Error test for a failed require()
 var vmExceptionTextRevert = "VM Exception while processing transaction: revert";
@@ -21,58 +14,37 @@ var unsignedMessage2      = "9bd9f4b563191943c9008219a2279fccf4d38eafe5e01e6fdfc
 // The following addresses and signatures were generated with a trezor with wallet words:
 // merge alley   lucky   axis penalty manage latin   gasp  virus    captain wheel deal
 // chase fragile chapter boss zero    dirt   stadium tooth physical valve   kid   plunge
-var trezorAddress1  = "0x757e3B637Ed4649A04cDb83D14c73bE6a6991019"; // m/44'/60'/600'/0/0
-var trezorSig1      = "5b4198d2b4c8a7d1e16166defd97e752703cd6ada30d38246227a9575241c38837010f853738a32a378fbd94d0320b2bb7c4bda6b7dd1df4a24cf2842b0756e51c";
-var trezorV1        = "0x01";
-var trezorR1        = "0x5b4198d2b4c8a7d1e16166defd97e752703cd6ada30d38246227a9575241c388";
-var trezorS1        = "0x37010f853738a32a378fbd94d0320b2bb7c4bda6b7dd1df4a24cf2842b0756e5";
 
-var trezorAddress2  = "0xa63B1930cBDd89ece8E1Db05a21C95aB1Ec35DbF"; // m/44'/60'/601'/0/0
-var trezorSig2      = "20c2633e06539408a4e44729921b450d2e314557dcc77fe18f1e5ad2000f385c275397293a8bda557ae2af61ce95d4619eee802d62a236c7bbc40f1f7ff024421c";
-var trezorV2        = "0x01";
-var trezorR2        = "0x20c2633e06539408a4e44729921b450d2e314557dcc77fe18f1e5ad2000f385c";
-var trezorS2        = "0x275397293a8bda557ae2af61ce95d4619eee802d62a236c7bbc40f1f7ff02442";
+var address1  = "0x757e3B637Ed4649A04cDb83D14c73bE6a6991019"; // m/44'/60'/600'/0/0
+var V1        = "0x01";
+var R1        = "0x763f3a67f3997743a80cf1c2d6a29de2b8ed41de40c82e1e390c38935b1687f6";
+var S1        = "0x3bc0135a8758e102fe0b2feade060fdbedad2f62401702021712bc24b1c28282";
 
-var trezorAddress3  = "0x6519E8D43F81cBD3739E0970DF2e874c188586a6"; // m/44'/60'/602'/0/0
-var trezorSig3      = "ea2cbefec318cdb8141a940c033971107d9e7a60f83b7aecc687849ae703428f31a10acbbb31d1724bcfed79900e63f85dc6b0a82c0b7bcca611c185430c8b951b";
-var trezorV3        = "0x00";
-var trezorR3        = "0xea2cbefec318cdb8141a940c033971107d9e7a60f83b7aecc687849ae703428f";
-var trezorS3        = "0x31a10acbbb31d1724bcfed79900e63f85dc6b0a82c0b7bcca611c185430c8b95";
+var address2  = "0xa63B1930cBDd89ece8E1Db05a21C95aB1Ec35DbF"; // m/44'/60'/601'/0/0
+var V2        = "0x00";
+var R2        = "0x4700d5176f7aa8bb87c575946759d0ecdb66825ebde3c9e09950c2989a09b463";
+var S2        = "0x22ede78ec43589e4d75d61eb9e60fb975ec8182c89c75c4c41f3f907e961e13b";
 
-// Ledger Addresses and signatures using the wallet words above:
-var ledgerAddress1  = "0x757e3B637Ed4649A04cDb83D14c73bE6a6991019"; // m/44'/60'/600'/0/0
-var ledgerV1        = "0x01";
-var ledgerR1        = "0x763f3a67f3997743a80cf1c2d6a29de2b8ed41de40c82e1e390c38935b1687f6";
-var ledgerS1        = "0x3bc0135a8758e102fe0b2feade060fdbedad2f62401702021712bc24b1c28282";
-
-var ledgerAddress2  = "0xa63B1930cBDd89ece8E1Db05a21C95aB1Ec35DbF"; // m/44'/60'/601'/0/0
-var ledgerV2        = "0x00";
-var ledgerR2        = "0x4700d5176f7aa8bb87c575946759d0ecdb66825ebde3c9e09950c2989a09b463";
-var ledgerS2        = "0x22ede78ec43589e4d75d61eb9e60fb975ec8182c89c75c4c41f3f907e961e13b";
-
-var ledgerAddress3  = "0x6519E8D43F81cBD3739E0970DF2e874c188586a6"; // m/44'/60'/602'/0/0
-var ledgerV3        = "0x00";
-var ledgerR3        = "0x4fa51ff4a2b238d3b2d9bbc19b9c09b1405910c786b5f24d15a14fb7e5d8287d";
-var ledgerS3        = "0x0948b16d5095a0852277ea0f2159cdf1a0002726466828bede2376ca53aafb41";
-
+var address3  = "0x6519E8D43F81cBD3739E0970DF2e874c188586a6"; // m/44'/60'/602'/0/0
+var V3        = "0x00";
+var R3        = "0x4fa51ff4a2b238d3b2d9bbc19b9c09b1405910c786b5f24d15a14fb7e5d8287d";
+var S3        = "0x0948b16d5095a0852277ea0f2159cdf1a0002726466828bede2376ca53aafb41";
 
 // These signed messages are for the second spend tests.
-var trezorSig1_1      = "e9946c4ad8202a1e58ecef6bbfbb8567863c9a0075215f957506b0638636e08f79d17ef2c3dcf3d272d5275eb068d8b6b264aa416e494eca02a28e7293baa4451c";
-var trezorV1_1        = "0x01";
-var trezorR1_1        = "0xe9946c4ad8202a1e58ecef6bbfbb8567863c9a0075215f957506b0638636e08f";
-var trezorS1_1        = "0x79d17ef2c3dcf3d272d5275eb068d8b6b264aa416e494eca02a28e7293baa445";
+var sig1_1      = "0dadf704af5361797cd0e6eb7f6e0bd3cdc4bbb994cf96d06f9f24e0360de4d050fbcdda11f9f9259db5dbf43769c2d07c1220b6a063ad7290b2cd3fa10541121b";
+var V1_1        = "0x00";
+var R1_1        = "0x0dadf704af5361797cd0e6eb7f6e0bd3cdc4bbb994cf96d06f9f24e0360de4d0";
+var S1_1        = "0x50fbcdda11f9f9259db5dbf43769c2d07c1220b6a063ad7290b2cd3fa1054112";
 
-var trezorSig2_1      = "188f581b7c31e7f23f74a11d6de46130d429aca7082c8f682a9a68a1825ded1b2c1d445227719f2781321cb602e5cac8c971c12faec4d744b4339ade9f2f128b1c";
-var trezorV2_1        = "0x01";
-var trezorR2_1        = "0x188f581b7c31e7f23f74a11d6de46130d429aca7082c8f682a9a68a1825ded1b";
-var trezorS2_1        = "0x2c1d445227719f2781321cb602e5cac8c971c12faec4d744b4339ade9f2f128b";
+var sig2_1      = "0567f30ccd338614e26354eb54b2a072034df43ad7e2c8ae234484202360c8b84b8ada29581b4c264d39db53f446c5a3c090e613b9307d96ca27df720713079c1c";
+var V2_1        = "0x01";
+var R2_1        = "0x0567f30ccd338614e26354eb54b2a072034df43ad7e2c8ae234484202360c8b8";
+var S2_1        = "0x4b8ada29581b4c264d39db53f446c5a3c090e613b9307d96ca27df720713079c";
 
-var trezorSig3_1      = "42859b0a22477cf875d5a092276d963f3d44335a15b10df9e2b5d37e99a6847a0cece64119e9edade06ae73cda15311aa6134be5f18740255bebb9f9a155b4eb1b";
-var trezorV3_1        = "0x00";
-var trezorR3_1        = "0x42859b0a22477cf875d5a092276d963f3d44335a15b10df9e2b5d37e99a6847a";
-var trezorS3_1        = "0x0cece64119e9edade06ae73cda15311aa6134be5f18740255bebb9f9a155b4eb";
-
-
+var sig3_1      = "20b644a8f3661f1b1f28ef79e16589297f8a934443323562749edcf2a5a77a1711ac8610ccbee830f59778e5909613ac11af8bdb3661f88330e24bb6ae02d3e81b";
+var V3_1        = "0x00";
+var R3_1        = "0x20b644a8f3661f1b1f28ef79e16589297f8a934443323562749edcf2a5a77a17";
+var S3_1        = "0x11ac8610ccbee830f59778e5909613ac11af8bdb3661f88330e24bb6ae02d3e8";
 
 
 function makeDeposit(accounts, testContract) {
@@ -147,7 +119,7 @@ contract('When first created', function(accounts) {
 
     it("has a correct Major Version value", function() {
 	return testContract.unchainedMultisigVersionMajor.call().then(function(major) {
-	    assert.equal(major, 1);
+	    assert.equal(major, 2);
 	});
     });
 
@@ -177,7 +149,7 @@ contract('When first created', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	});
     });
@@ -212,7 +184,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)	    
 	});
@@ -222,7 +194,7 @@ contract('When already funded', function(accounts) {
 	it("can be killed by signed messages from the 1st & 2nd owners", function() {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 
-	    return testContract.spend.sendTransaction(accounts[4], 100, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV2, trezorR2, trezorS2).then(function() {
+	    return testContract.spend.sendTransaction(accounts[4], 100, V1, R1, S1, V2, R2, S2).then(function() {
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), "900");
 	    });
 	});
@@ -260,7 +232,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -271,7 +243,7 @@ contract('When already funded', function(accounts) {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 	    var expectedBalance = deposit - firstSpend
 
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV2, trezorR2, trezorS2).then(function() {
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V2, R2, S2).then(function() {
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
 	    	var expectedTransfer = new web3.BigNumber(firstSpend)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -286,7 +258,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -297,7 +269,7 @@ contract('When already funded', function(accounts) {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 	    var expectedBalance = deposit - firstSpend
 
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV2, trezorR2, trezorS2, trezorType, trezorV3, trezorR3, trezorS3).then(function() {
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V2, R2, S2, V3, R3, S3).then(function() {
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
 	    	var expectedTransfer = new web3.BigNumber(firstSpend)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -312,7 +284,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -323,137 +295,7 @@ contract('When already funded', function(accounts) {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 	    var expectedBalance = deposit - firstSpend
 	    	    
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function() {
-	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
-	    	var expectedTransfer = new web3.BigNumber(firstSpend)
-	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
-	    	assert.equal(increaseInDestination.toString(), expectedTransfer.toString());
-	    });
-	});
-    }
-});
-
-contract('When already funded', function(accounts) {
-
-    var testContract;
-
-    beforeEach(function() {
-	return TrezorMultiSig2of3.new(ledgerAddress1, ledgerAddress2, ledgerAddress3).then(function(instance) {
-	    testContract = instance;
-	    makeDeposit(accounts, testContract)
-	});
-    });
-
-    if (firstInvocation(accounts)) {
-	it("can be spent by signed messages from the 1st & 2nd LEDGER owners", function() {
-	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    var expectedBalance = deposit - firstSpend
-
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, ledgerType, ledgerV1, ledgerR1, ledgerS1, ledgerType, ledgerV2, ledgerR2, ledgerS2).then(function() {
-	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
-	    	var expectedTransfer = new web3.BigNumber(firstSpend)
-	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
-	    	assert.equal(increaseInDestination.toString(), expectedTransfer.toString());
-	    });
-	});
-    }
-});
-
-contract('When already funded', function(accounts) {
-
-    var testContract;
-
-    beforeEach(function() {
-	return TrezorMultiSig2of3.new(ledgerAddress1, ledgerAddress2, ledgerAddress3).then(function(instance) {
-	    testContract = instance;
-	    makeDeposit(accounts, testContract)
-	});
-    });
-
-    if (firstInvocation(accounts)) {
-	it("can be spent by signed messages from the 2nd & 3rd LEDGER owners", function() {
-	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    var expectedBalance = deposit - firstSpend
-
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, ledgerType, ledgerV2, ledgerR2, ledgerS2, ledgerType, ledgerV3, ledgerR3, ledgerS3).then(function() {
-	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
-	    	var expectedTransfer = new web3.BigNumber(firstSpend)
-	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
-	    	assert.equal(increaseInDestination.toString(), expectedTransfer.toString());
-	    });
-	});
-    }
-});
-
-contract('When already funded', function(accounts) {
-
-    var testContract;
-
-    beforeEach(function() {
-	return TrezorMultiSig2of3.new(ledgerAddress1, ledgerAddress2, ledgerAddress3).then(function(instance) {
-	    testContract = instance;
-	    makeDeposit(accounts, testContract)
-	});
-    });
-
-    if (firstInvocation(accounts)) {
-	it("can be spent by signed messages from the 1st & 3nd LEDGER owners", function() {
-	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    var expectedBalance = deposit - firstSpend
-
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, ledgerType, ledgerV1, ledgerR1, ledgerS1, ledgerType, ledgerV3, ledgerR3, ledgerS3).then(function() {
-	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
-	    	var expectedTransfer = new web3.BigNumber(firstSpend)
-	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
-	    	assert.equal(increaseInDestination.toString(), expectedTransfer.toString());
-	    });
-	});
-    }
-});
-
-contract('When already funded', function(accounts) {
-
-    var testContract;
-
-    beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, ledgerAddress2, ledgerAddress3).then(function(instance) {
-	    testContract = instance;
-	    makeDeposit(accounts, testContract)
-	});
-    });
-
-    if (firstInvocation(accounts)) {
-	it("can be spent by signed messages from the Trezor first and Ledger second", function() {
-	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    var expectedBalance = deposit - firstSpend
-
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, ledgerType, ledgerV3, ledgerR3, ledgerS3).then(function() {
-	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
-	    	var expectedTransfer = new web3.BigNumber(firstSpend)
-	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
-	    	assert.equal(increaseInDestination.toString(), expectedTransfer.toString());
-	    });
-	});
-    }
-});
-
-contract('When already funded', function(accounts) {
-
-    var testContract;
-
-    beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, ledgerAddress2, ledgerAddress3).then(function(instance) {
-	    testContract = instance;
-	    makeDeposit(accounts, testContract)
-	});
-    });
-
-    if (firstInvocation(accounts)) {
-	it("can be spent by signed messages from the Ledger first and Trezor second", function() {
-	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    var expectedBalance = deposit - firstSpend
-
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, ledgerType, ledgerV3, ledgerR3, ledgerS3, trezorType, trezorV1, trezorR1, trezorS1).then(function() {
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function() {
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), expectedBalance.toString());
 	    	var expectedTransfer = new web3.BigNumber(firstSpend)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[4]).minus(startingDestinationBalance)
@@ -464,13 +306,12 @@ contract('When already funded', function(accounts) {
 });
 
 
-
 contract('When already funded', function(accounts) {
 
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -480,7 +321,7 @@ contract('When already funded', function(accounts) {
 	it("emits a 'Spent' event when it is correctly spent", function() {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 	    
-	    return testContract.spend(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(result) {
+	    return testContract.spend(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function(result) {
 	    	assert.equal(result.logs[0].event, "Spent");
 	    	assert.equal(result.logs[0].args.to, accounts[4]);
 	    	assert.equal(result.logs[0].args.transfer.toString(), firstSpend.toString());
@@ -494,7 +335,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -504,9 +345,9 @@ contract('When already funded', function(accounts) {
 	it("throws an error when killed with invalid messages", function() {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 
-	    badTrezorR3 = trezorR3.replace('a', 'b');
+	    badR3 = R3.replace('a', 'b');
 
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, badTrezorR3, trezorS3).then(function(instance) { 
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, badR3, S3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
 	    	assert.equal(e.message, vmExceptionTextRevert);
@@ -525,7 +366,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -536,7 +377,7 @@ contract('When already funded', function(accounts) {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
 	    var transferAmount = 101; //(expects 100)	    
 
-	    return testContract.spend.sendTransaction(accounts[4], transferAmount, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) { 
+	    return testContract.spend.sendTransaction(accounts[4], transferAmount, V1, R1, S1, V3, R3, S3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
 	    	assert.equal(e.message, vmExceptionTextRevert);
@@ -555,7 +396,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -564,12 +405,13 @@ contract('When already funded', function(accounts) {
     if (firstInvocation(accounts)) {
 	it("throws an error when killed with correct message signed by wrong account", function() {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[4])
-	    
+
+	    // TODO: re-sign this
 	    // correct message, signed with m/44'/6266'/1'/0/0
-	    wrongR3 = 0x4a91feffc292332382522944951c3ce1027c16dd4d2d2d4dad6116a46e354b08;
-            wrongS3 = 0x78e9a305789f5e61425d17a90d0da25d41836c9e9383f25f6afbc8a2a6054c2e;
+	    wrongR3 = 0xf1eb55bb4bd6602ebab1c927e0f24807a6703767965f3394ba772ae7166702bf;
+            wrongS3 = 0x5e3d5bdf9e7243ba3683918360b6939f38ed2ee87684e5c36022e01b58152363;
 	    wrongV3 = 0x01;
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, wrongV3, wrongR3, wrongS3).then(function(instance) { 
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1,  wrongV3, wrongR3, wrongS3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
 	    	assert.equal(e.message, vmExceptionTextRevert);
@@ -587,7 +429,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -599,7 +441,7 @@ contract('When already funded', function(accounts) {
 	    
 	    badDestination = accounts[5]
 
-	    return testContract.spend.sendTransaction(badDestination, firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) { 
+	    return testContract.spend.sendTransaction(badDestination, firstSpend, V1, R1, S1, V3, R3, S3).then(function(instance) { 
 	    	assert(false, "Expected error when killing"); 
 	    }).catch(function(e) {
 	    	assert.equal(e.message, vmExceptionTextRevert);
@@ -618,7 +460,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	});
@@ -628,14 +470,12 @@ contract('When already spent once', function(accounts) {
 	it("has an incremented spendNonce value", function() {
 	    return testContract.spend.sendTransaction(accounts[4],
 						      firstSpend,
-						      trezorType,
-						      trezorV1,
-						      trezorR1,
-						      trezorS1,
-						      trezorType,
-						      trezorV3,
-						      trezorR3,
-						      trezorS3)
+						      V1,
+						      R1,
+						      S1,
+						      V3,
+						      R3,
+						      S3)
 		.then(function(instance) {
    		    return testContract.spendNonce.call().then(function(nonce) {
 		        assert.equal(nonce, 1);
@@ -650,7 +490,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	});
@@ -660,14 +500,12 @@ contract('When already spent once', function(accounts) {
 	it("returns the expected message to sign", function() {
 	    return testContract.spend.sendTransaction(accounts[4],
 						      firstSpend,
-						      trezorType,
-						      trezorV1,
-						      trezorR1,
-						      trezorS1,
-						      trezorType,
-						      trezorV3,
-						      trezorR3,
-						      trezorS3)
+						      V1,
+						      R1,
+						      S1,
+						      V3,
+						      R3,
+						      S3)
 		.then(function(instance) {	    
 		    return testContract.generateMessageToSign.call(accounts[5], secondSpend).then(function(message) {
 			assert.equal(message,"0x9bd9f4b563191943c9008219a2279fccf4d38eafe5e01e6fdfcf4097a2a2d727");
@@ -682,10 +520,10 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
-	    testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) {
+	    testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function(instance) {
 		return true;
 	    });
 	});
@@ -695,7 +533,7 @@ contract('When already spent once', function(accounts) {
 	it("can be spent by signed messages from the 1st & 2nd owners", function() {
 	    var startingDestinationBalance = web3.eth.getBalance(accounts[5])	    
 
-	    return testContract.spend.sendTransaction(accounts[5], secondSpend, trezorType, trezorV1_1, trezorR1_1, trezorS1_1, trezorType, trezorV2_1, trezorR2_1, trezorS2_1).then(function() {
+	    return testContract.spend.sendTransaction(accounts[5], secondSpend, V1_1, R1_1, S1_1, V2_1, R2_1, S2_1).then(function() {
 	    	assert.equal(web3.eth.getBalance(testContract.address).toString(), "0");
 	    	var expectedTransfer = new web3.BigNumber(secondSpend)
 	    	var increaseInDestination = web3.eth.getBalance(accounts[5]).minus(startingDestinationBalance);
@@ -710,10 +548,10 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(trezorAddress1, trezorAddress2, trezorAddress3).then(function(instance) {
+	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
-	    testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV3, trezorR3, trezorS3).then(function(instance) {
+	    testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function(instance) {
 		return true;
 	    });
 	});
@@ -725,7 +563,7 @@ contract('When already spent once', function(accounts) {
 	    var expectedContractBalance = deposit - firstSpend
             
 
-	    return testContract.spend.sendTransaction(accounts[4], firstSpend, trezorType, trezorV1, trezorR1, trezorS1, trezorType, trezorV2, trezorR2, trezorS2).then(function() {
+	    return testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V2, R2, S2).then(function() {
 	    	assert(false, "Expected error when spending"); 
 	    }).catch(function(e) {
 	    	assert.equal(e.message, vmExceptionTextRevert);

@@ -34,7 +34,7 @@ contract TrezorMultiSig2of3 {
   uint256 public spendNonce = 0;
 
   // Contract Versioning
-  uint256 public unchainedMultisigVersionMajor = 1;
+  uint256 public unchainedMultisigVersionMajor = 2;
   uint256 public unchainedMultisigVersionMinor = 0;
 
   // An event sent when funds are received.
@@ -85,10 +85,9 @@ contract TrezorMultiSig2of3 {
   // s1 and s2 should be 0x00 or 0x01 corresponding to 0x1b and 0x1c respectively.
   function spend(address destination,
 		 uint256 value,
-		 uint8 wallet_type_1,
-		 uint8 v1, bytes32 r1,
+		 uint8 v1,
+		 bytes32 r1,
 		 bytes32 s1,
-		 uint8 wallet_type_2,
 		 uint8 v2,
 		 bytes32 r2,
 		 bytes32 s2
@@ -98,11 +97,9 @@ contract TrezorMultiSig2of3 {
     require(address(this).balance >= value);
     require(_validSignature(destination,
 			    value,
-			    wallet_type_1,
 			    v1,
 			    r1,
 			    s1,
-			    wallet_type_2,
 			    v2,
 			    r2,
 			    s2));
@@ -116,23 +113,15 @@ contract TrezorMultiSig2of3 {
   // destination address.
   function _validSignature(address destination,
 			   uint256 value,
-			   uint8 wallet_type_1,
 			   uint8 v1,
 			   bytes32 r1,
 			   bytes32 s1,
-			   uint8 wallet_type_2,
 			   uint8 v2,
 			   bytes32 r2,
 			   bytes32 s2) private view returns (bool) {
-    bytes32 message1 = _messageToRecover(destination, value, wallet_type_1);
-    bytes32 message2 = "";
-    if (wallet_type_1 == wallet_type_2) {
-      message2 = message1;
-    } else {
-      message2 = _messageToRecover(destination, value, wallet_type_2);
-    }
-    address addr1 = ecrecover(message1, v1+27, r1, s1);
-    address addr2 = ecrecover(message2, v2+27, r2, s2);
+    bytes32 message = _messageToRecover(destination, value);
+    address addr1 = ecrecover(message, v1+27, r1, s1);
+    address addr2 = ecrecover(message, v2+27, r2, s2);
     require(_distinctOwners(addr1, addr2));
 
     return true;
@@ -148,25 +137,13 @@ contract TrezorMultiSig2of3 {
   // unsigned message, and the unsigned ascii message itself are
   // then concatenated and hashed with keccak256.
   function _messageToRecover(address destination,
-			     uint256
-			     value,
-			     uint8 wallet_type
+			     uint256 value
 			     ) private view returns (bytes32) {
     bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
     bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
     bytes memory prefix = "\x19Ethereum Signed Message:\n";
-    if (wallet_type == 1) {
-        // TREZOR
-        return keccak256(abi.encodePacked(prefix,
-					  bytes1(unsignedMessageBytes.length),
-					  unsignedMessageBytes));
-    } else if (wallet_type == 2) {
-        // LEDGER
-        prefix = "\x19Ethereum Signed Message:\n64";
-        return keccak256(abi.encodePacked(prefix,unsignedMessageBytes));
-    } else {
-        revert();
-    }
+    prefix = "\x19Ethereum Signed Message:\n64";
+    return keccak256(abi.encodePacked(prefix,unsignedMessageBytes));
   }
 
   // Confirm the pair of addresses as two distinct owners of this contract.
