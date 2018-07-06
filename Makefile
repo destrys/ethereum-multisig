@@ -55,7 +55,7 @@ dependencies: js-dependencies-prod
 
 dependencies-all: js-dependencies-all python-dependencies
 
-contract: build/contracts/TrezorMultiSig2of3.json build/contracts/TrezorMultiSig2of3.hash
+contract: build/contracts/TrezorMultiSig2of3.json
 
 dapp: images fonts css js html
 
@@ -85,9 +85,6 @@ freeze:
 
 build/contracts/TrezorMultiSig2of3.json: contracts/TrezorMultiSig2of3.sol
 	$(TRUFFLE) compile
-
-build/contracts/TrezorMultiSig2of3.hash: build/contracts/TrezorMultiSig2of3.json
-	$(TRUFFLE) exec scripts/contract_bytecode_hash.js | tail -n1  > build/contracts/TrezorMultiSig2of3.hash
 
 #
 # == DAPP ==

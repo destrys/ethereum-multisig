@@ -48,7 +48,7 @@
     "solium": "^1.1.7",
     "tether": "^1.4.3",
     "trezor.js-node": "^6.11.3",
-    "truffle": "^4.0.6",
+    "truffle": "^4.1.13",
     "web3": "^0.20.4"
   },
   "dependencies": {
