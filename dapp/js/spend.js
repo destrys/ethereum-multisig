@@ -2,7 +2,7 @@
 // == Find & Validate Vault Contract ==
 //
 
-var MAJOR_VERSION = "1";
+var MAJOR_VERSION = "2";
 var MINOR_VERSION = "0";
 var VERSION       = [MAJOR_VERSION, MINOR_VERSION].join('.');
 
@@ -344,7 +344,6 @@ function activateSignature(signature, message) {
 
     if (message) {
 	var signatureShow = signature.find('.signature-show-local');
-        signatureShow.find('.wallet_type').html("trezor");	
 	signatureShow.find('.signature-full').html(message.signature);
 	signatureShow.find('.signature-r').html(extractR(message.signature));
 	signatureShow.find('.signature-s').html(extractS(message.signature));
@@ -352,7 +351,6 @@ function activateSignature(signature, message) {
 	signatureShow.find('.signature-bip32-path').html(bip32path.val());	
     } else {
 	var signatureShow = signature.find('.signature-show-remote');
-        signatureShow.find('.wallet_type').html("trezor");		
 	signatureShow.find('.signature-full').html(enteredSignature.val());
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
@@ -375,14 +373,12 @@ function activateLedgerSignature(signature, message) {
     if (message) {
 	var signatureShow = signature.find('.signature-show-local');
 	signatureShow.find('.signature-full').html(message.r + message.s + message.v);
-	signatureShow.find('.wallet_type').html("ledger");
 	signatureShow.find('.signature-r').html("0x" + message.r);
 	signatureShow.find('.signature-s').html("0x" + message.s);
 	signatureShow.find('.signature-v').html(extractLedgerV(message.v));
 	signatureShow.find('.signature-bip32-path').html(bip32path.val());
     } else {
 	var signatureShow = signature.find('.signature-show-remote');
-        signatureShow.find('.wallet_type').html("ledger");		
 	signatureShow.find('.signature-full').html(enteredSignature.val());
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
@@ -418,14 +414,6 @@ function addedSignatureCount() {
 
 
 function currentSignatures() {
-    var wallet = $(".wallet_type").map(function() {
-	var tmpWallet = $(this).text();
-	if (tmpWallet == "trezor") {
-	    return 1
-	} else if (tmpWallet == "ledger") {
-	    return 2
-	}
-    }).toArray().filter(String);
     var r = $(".signature-r").map(function() {
 	return $(this).text()
     }).toArray().filter(String);
@@ -435,7 +423,7 @@ function currentSignatures() {
     var v = $(".signature-v").map(function() {
 	return $(this).text()
     }).toArray().filter(String);
-    return {wallet: wallet, r: r, s: s, v: v}
+    return {r: r, s: s, v: v}
 }
 
 function enableRemoveSignatureForms() {
@@ -444,7 +432,6 @@ function enableRemoveSignatureForms() {
 	var signatureNew  = $(this).closest('.signature').find('.signature-new');
 	var signatureShow = $(this).closest('.signature-show');
 	signatureShow.prop('hidden', true);
-	signatureShow.find('.wallet_type').html('');	
 	signatureShow.find('.signature-full').html('');
 	signatureShow.find('.signature-bip32-path').html('');
 	signatureShow.find('.signature-r').html('');
@@ -492,8 +479,8 @@ function broadcastSpend(callback, errback) {
 			contract.spend.sendTransaction(
 			    destination, 
 			    amount, 
-			    sigs.wallet[0], sigs.v[0], sigs.r[0], sigs.s[0], 
-			    sigs.wallet[1], sigs.v[1], sigs.r[1], sigs.s[1], {
+			    sigs.v[0], sigs.r[0], sigs.s[0], 
+			    sigs.v[1], sigs.r[1], sigs.s[1], {
 				from: account,
 				gas: SPEND_GAS_LIMIT,
 			    }, function(txError, txid) {
