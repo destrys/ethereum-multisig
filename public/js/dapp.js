@@ -88256,12 +88256,32 @@ function validateBIP32Path(path) {
     }	    	
 }
 
+var BIP32_LEDGER_REGEXP = /^m\/44|1\'\/60|61\'(\/\d+\'?)*\/\d+$/
+
+function validateLedgerBIP32Path(path) {
+    if (path && path.length > 0) {
+	if (BIP32_LEDGER_REGEXP.test(path)) {
+            return { valid: true }
+	} else {
+	    return {
+		valid: false,
+	    }
+	}
+    } else {
+	return {
+	    valid:   false,
+	}
+    }	    	
+}
+
 
 function enableBIP32InputFeedback(input, field) {
     input.on("input", function(event) {
 	$(this).closest('form').find('.trezor-errors').html('');
-	var check     = validateBIP32Path(event.target.value);
+	var check       = validateBIP32Path(event.target.value);
+ 	var ledgerCheck = validateLedgerBIP32Path(event.target.value);	
 	var signerNew = $(this).closest('.signer-new');
+        var walletType = signerNew.find('.signer-hardware-wallet').val();	
 	if (check.valid) {
 	    signerNew.find('.export-signer-address-form').find('button').prop('disabled', false);
 	    var signerInput = signerNew.find('.signer-address-input');
@@ -88269,6 +88289,16 @@ function enableBIP32InputFeedback(input, field) {
 	    $(this).addClass('is-valid');
 	    $(this).removeClass('is-invalid');
 	    $(this).closest('.form-group').find('.text-danger').html('');
+	    if (walletType === 'Ledger') {
+   	        if (ledgerCheck.valid) {
+		    $(this).closest('form').find('.ledger-warning').html('');
+		} else {
+		    var ledgerStr = "Warning: The standard Ledger ethereum app\
+                        currently only supports BIP32 paths that begin with\
+                        m/44'/60' or m/44'/1'";
+	            $(this).closest('form').find('.ledger-warning').html(ledgerStr);
+		}
+	    }	
 	} else {
 	    signerNew.find('button').prop('disabled', true);
 	    $(this).addClass('is-invalid');
@@ -88278,9 +88308,27 @@ function enableBIP32InputFeedback(input, field) {
     });
 }
 
+function walletSelectorFeedback(select, field) {
+    select.on("input", function(event) {
+	var signerNew = $(this).closest('.signer-new');
+	var path = signerNew.find('.signer-bip32-path').val();
+ 	var check = validateLedgerBIP32Path(path);
+	if (event.target.value === 'Ledger' && !check.valid) {
+	    var ledgerStr = "Warning: The standard Ledger ethereum app\
+                currently only supports BIP32 paths that begin with\
+                m/44'/60' or m/44'/1'";
+	    $(this).closest('form').find('.ledger-warning').html(ledgerStr);
+	} else {
+	    $(this).closest('form').find('.ledger-warning').html('');
+	}
+    });
+}
+
+
 
 $(function () {
     enableBIP32InputFeedback($('.signer .signer-bip32-path'));
+    walletSelectorFeedback($('.signer .signer-hardware-wallet'));
 })
 //
 // == Enter Signer Address ==

@@ -12,7 +12,7 @@
     <p>It was built by <a href="https://www.unchained-capital.com"
     target="_blank">Unchained Capital</a> to help holders worldwide
     safely store their ETH using multisig cold-storage.  If you are
-    storing ETH on a Trezor and you trust at least two other people,
+    storing ETH on a Trezor or Ledger and you trust at least two other people,
     you could be doing it better.  Now you can use this application
     with your trusted friends, family, and colleagues to protect your
     wealth.</p>
@@ -52,13 +52,16 @@
 <h2>How does it work?</h2>
 
 <p class="lead">This application connects <a href="https://trezor.io"
-target="_blank">Trezor</a> hardware wallets with the Ethereum blockchain.</p>
+					     target="_blank">Trezor</a> and
+ <a href="https://www.ledgerwallet.com/" target="_blank">Ledger</a>
+  hardware wallets with the Ethereum blockchain. <br /> It has been tested with
+the Trezor One and Ledger Nano S.</p>
 
-<p>When creating the multisig smart contract, 3 Trezors are required.
-When spending, 2/3 of these same Trezors are required.  The private
+<p>When creating the multisig smart contract, three hardware wallets are required.
+When spending, 2/3 of these same hardware wallets are required.  The private
 keys used to create and spend from a contract are only present on your
-Trezors.  This application stores no data whatsoever about you, your
-Trezors, your addresses, or your transactions.</p>
+hardware wallets.  This application stores no data whatsoever about you, your
+wallets, your addresses, or your transactions.</p>
 
 <p>This means that you are completely in control of your own security
 and accounting.  In particular:</p>
@@ -66,12 +69,12 @@ and accounting.  In particular:</p>
 <ul>
   <li>You must yourself track the addresses of the smart contracts
   this application creates.</li>
-  <li>For each such address, you must track which Trezors you used to
+  <li>For each such address, you must track which harware wallets you used to
   create the address, along with which BIP32 derivation path you used
-  on each Trezor (it is OK to reuse the same 3 Trezors & BIP32
-  paths).</li>
-  <li>You must protect these Trezors and their corresponding wallet
-  words.  2/3-multisig is a great security improvement over singlesig
+  with each hardware wallet (it is OK to reuse the same BIP32
+  path with each wallet).</li>
+  <li>You must protect these hardware wallets and their corresponding wallet
+  words.  2/3-multisig is a great security improvement over single-signature
   but that's no excuse to get sloppy about the security of an
   individual key.</li>
 </ul>
@@ -90,10 +93,10 @@ sufficient.</p>
 
 <p>The account used to pay for gas has absolutely no special rights to
 fund, spend from, or otherwise control the smart contract this
-application creates.  Only the private keys on the 3 Trezor devices
+application creates.  Only the private keys on the 3 hardware wallets
 you used to create the smart contract matter.  Creating and spending
 from a smart contract can be done by totally separate accounts, as
-long as this application and the same 3 Trezors are used.</p>
+long as this application and the same 3 hardware wallets are used.</p>
 
 <p>Because of this design, a browser-based wallet such
 as <a href="https://metamask.io/" target="_blank">Metamask</a>
