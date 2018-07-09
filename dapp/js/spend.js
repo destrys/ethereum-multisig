@@ -477,7 +477,6 @@ function broadcastSpend(callback, errback) {
     var destination = $('.spend-destination-address').html();
     var amount      = ethToWei(parseFloat($('.spend-amount').html()));
     var sigs        = currentSignatures();
-    console.log('TEST', source, destination, amount, sigs);
     withValidAccount(
 	function(account) {
 	    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
