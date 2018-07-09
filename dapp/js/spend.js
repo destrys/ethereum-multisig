@@ -261,6 +261,7 @@ function enableSignMessageForms() {
 	var form = $(this);
 	var wallet = form.find('select.signer-hardware-wallet').val()	
 	var message = $('#spend-message').html().slice(2);
+	var minimumTrezorFirmware = "1.6.2"	
 	if (wallet == 'Trezor') {	
      	    TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
 		if (result.success) {
@@ -271,7 +272,7 @@ function enableSignMessageForms() {
 		    console.error(result.error);
 		    form.find('.trezor-errors').html(result.error);
 		}
-	    });
+	    }, minimumTrezorFirmware);
 	} else if (wallet == 'Ledger') {
 	    var ledgerMessage = stringToHex(message)
             TransportU2F.create().then(transport => {
