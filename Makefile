@@ -43,7 +43,7 @@ CSS += dapp/css/cards.css
 JS := $(NODE_DIR)/jquery/dist/jquery.js $(NODE_DIR)/bootstrap/dist/js/bootstrap.js $(NODE_DIR)/tether/dist/js/tether.js $(NODE_DIR)/highlightjs/highlight.pack.js
 JS += dapp/js/requires.js dapp/js/utils.js dapp/js/connection.js dapp/js/bip32.js dapp/js/create.js dapp/js/spend.js
 
-JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r @ledgerhq/hw-app-eth -r @ledgerhq/hw-transport-u2f
+JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r sha.js -r @ledgerhq/hw-app-eth -r @ledgerhq/hw-transport-u2f
 
 #
 # == Top-Level Targets ==

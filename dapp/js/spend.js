@@ -225,6 +225,14 @@ function getMessageToSign(source, destination, amount, callback, errback) {
     );
 }
 
+function ledgerDisplay(message) {
+    let hash = shajs('sha256').update(message).digest('hex');
+    let first4 = hash.substring(0,4).toUpperCase();
+    let last4 = hash.substring(hash.length-4, hash.length).toUpperCase();
+    return first4 + "..." + last4
+}
+// AB1A...23BA
+
 // TODO: calculate pre-hash of message
 function enableAuthorSpendForm() {
     $("#author-spend-form").submit(function(event) {
@@ -236,11 +244,13 @@ function enableAuthorSpendForm() {
 	getMessageToSign(
 	    source, destination, amount,
 	    function(message) {
+		let displayMessage = message.slice(2)
 		$('#author-spend-errors').html('');
 		$('.spend-source-address').html(source);
 		$('.spend-destination-address').html(destination);
 		$('.spend-amount').html(amount);
-		$('#spend-message').html(message);
+		$('#spend-message-trezor').html(displayMessage);
+		$('#spend-message-ledger').html(ledgerDisplay(displayMessage));
 		$("#author-spend").prop('hidden', true);
 		$("#spend").prop('hidden', false);
 		$('.signature').prop('hidden', false);
@@ -260,7 +270,7 @@ function enableSignMessageForms() {
 	event.preventDefault();
 	var form = $(this);
 	var wallet = form.find('select.signer-hardware-wallet').val()	
-	var message = $('#spend-message').html().slice(2);
+	var message = $('#spend-message-trezor').html();
 	var minimumTrezorFirmware = "1.6.2"	
 	if (wallet == 'Trezor') {	
      	    TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {

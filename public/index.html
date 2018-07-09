@@ -257,7 +257,7 @@ contract MultiSig2of3 {
 
   // The fallback function for this contract.
   function() public payable {
-    emit Funded(this.balance);
+    emit Funded(address(this).balance);
   }
 
   // Generates the message to sign given the output destination address and amount.
@@ -335,8 +335,7 @@ contract MultiSig2of3 {
 			     ) private view returns (bytes32) {
     bytes32 hashedUnsignedMessage = generateMessageToSign(destination, value);
     bytes memory unsignedMessageBytes = _hashToAscii(hashedUnsignedMessage);
-    bytes memory prefix = "\x19Ethereum Signed Message:\n";
-    prefix = "\x19Ethereum Signed Message:\n64";
+    bytes memory prefix = "\x19Ethereum Signed Message:\n64";
     return keccak256(abi.encodePacked(prefix,unsignedMessageBytes));
   }
 

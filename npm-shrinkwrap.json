@@ -3331,18 +3331,6 @@
       "integrity": "sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=",
       "dev": true
     },
-    "keccak": {
-      "version": "1.4.0",
-      "resolved": "https://registry.npmjs.org/keccak/-/keccak-1.4.0.tgz",
-      "integrity": "sha512-eZVaCpblK5formjPjeTBik7TAg+pqnDrMHIffSvi9Lh7PQgM1+hSzakUeZFCk9DVVG0dacZJuaz2ntwlzZUIBw==",
-      "dev": true,
-      "requires": {
-        "bindings": "^1.2.1",
-        "inherits": "^2.0.3",
-        "nan": "^2.2.1",
-        "safe-buffer": "^5.1.0"
-      }
-    },
     "kind-of": {
       "version": "3.2.2",
       "resolved": "https://registry.npmjs.org/kind-of/-/kind-of-3.2.2.tgz",
@@ -3737,7 +3725,8 @@
       "version": "2.8.0",
       "resolved": "https://registry.npmjs.org/nan/-/nan-2.8.0.tgz",
       "integrity": "sha1-7XFfP+neArV6XmJS2QqWZ14fCFo=",
-      "dev": true
+      "dev": true,
+      "optional": true
     },
     "negotiator": {
       "version": "0.6.1",
