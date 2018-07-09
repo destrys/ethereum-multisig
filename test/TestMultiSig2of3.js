@@ -1,4 +1,4 @@
-var TrezorMultiSig2of3 = artifacts.require("TrezorMultiSig2of3");
+var MultiSig2of3 = artifacts.require("MultiSig2of3");
 
 var deposit = 1000; // wei
 var firstSpend = 100;
@@ -59,43 +59,43 @@ function firstInvocation(accounts) {
 contract('When constructing', function(accounts) {
 
     it("raises an error without any arguments", function() {
-	return TrezorMultiSig2of3.new().then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, "TrezorMultiSig2of3 contract constructor expected 3 arguments, received 0");
+	return MultiSig2of3.new().then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	    return assert.equal(e.message, "MultiSig2of3 contract constructor expected 3 arguments, received 0");
 	});
     });
 
     it("raises an error with a single argument", function() {
-	return TrezorMultiSig2of3.new(accounts[1]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, "TrezorMultiSig2of3 contract constructor expected 3 arguments, received 1");
+	return MultiSig2of3.new(accounts[1]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	    return assert.equal(e.message, "MultiSig2of3 contract constructor expected 3 arguments, received 1");
 	});
     });
 
     it("raises an error with only two arguments", function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[2]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
-	    return assert.equal(e.message, "TrezorMultiSig2of3 contract constructor expected 3 arguments, received 2");
+	return MultiSig2of3.new(accounts[1], accounts[2]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	    return assert.equal(e.message, "MultiSig2of3 contract constructor expected 3 arguments, received 2");
 	});
     });
 
     it("raises an error with three arguments when the first two are duplicates", function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[1], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	return MultiSig2of3.new(accounts[1], accounts[1], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
 	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
     it("raises an error with three arguments when the last two are duplicates", function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[3], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	return MultiSig2of3.new(accounts[1], accounts[3], accounts[3]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
 	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
     it("raises an error with three arguments when the first and third are duplicates", function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[2], accounts[1]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
+	return MultiSig2of3.new(accounts[1], accounts[2], accounts[1]).then(function(instance) {assert(false, "Expected error in constructor")}).catch(function(e) {
 	    return assert.equal(e.message, vmExceptionTextRevert);
 	});
     });
 
     it("does not raise error with three distinct arguments", function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
+	return MultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
 	    return assert(true);
 	});
     });
@@ -106,7 +106,7 @@ contract('When first created', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
+	return MultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
 	    testContract = instance;
 	});
     });
@@ -149,7 +149,7 @@ contract('When first created', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	});
     });
@@ -184,7 +184,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)	    
 	});
@@ -207,7 +207,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
+	return MultiSig2of3.new(accounts[1], accounts[2], accounts[3]).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -232,7 +232,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -258,7 +258,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -284,7 +284,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -311,7 +311,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -335,7 +335,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -366,7 +366,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -396,7 +396,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -429,7 +429,7 @@ contract('When already funded', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract)
 	});
@@ -460,7 +460,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	});
@@ -490,7 +490,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	});
@@ -520,7 +520,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	    testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function(instance) {
@@ -548,7 +548,7 @@ contract('When already spent once', function(accounts) {
     var testContract;
 
     beforeEach(function() {
-	return TrezorMultiSig2of3.new(address1, address2, address3).then(function(instance) {
+	return MultiSig2of3.new(address1, address2, address3).then(function(instance) {
 	    testContract = instance;
 	    makeDeposit(accounts, testContract);
 	    testContract.spend.sendTransaction(accounts[4], firstSpend, V1, R1, S1, V3, R3, S3).then(function(instance) {

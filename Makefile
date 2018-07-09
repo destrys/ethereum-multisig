@@ -43,7 +43,7 @@ CSS += dapp/css/cards.css
 JS := $(NODE_DIR)/jquery/dist/jquery.js $(NODE_DIR)/bootstrap/dist/js/bootstrap.js $(NODE_DIR)/tether/dist/js/tether.js $(NODE_DIR)/highlightjs/highlight.pack.js
 JS += dapp/js/requires.js dapp/js/utils.js dapp/js/connection.js dapp/js/bip32.js dapp/js/create.js dapp/js/spend.js
 
-JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r ethereumjs-wallet -r @ledgerhq/hw-app-eth -r @ledgerhq/hw-transport-u2f
+JS_BROWSERIFY := -r web3 -r highlightjs-solidity -r @ledgerhq/hw-app-eth -r @ledgerhq/hw-transport-u2f
 
 #
 # == Top-Level Targets ==
@@ -55,7 +55,7 @@ dependencies: js-dependencies-prod
 
 dependencies-all: js-dependencies-all python-dependencies
 
-contract: build/contracts/TrezorMultiSig2of3.json
+contract: build/contracts/MultiSig2of3.json
 
 dapp: images fonts css js html
 
@@ -83,7 +83,7 @@ freeze:
 # == Contract ==
 #
 
-build/contracts/TrezorMultiSig2of3.json: contracts/TrezorMultiSig2of3.sol
+build/contracts/MultiSig2of3.json: contracts/MultiSig2of3.sol
 	$(TRUFFLE) compile
 
 #
@@ -102,14 +102,14 @@ css:
 	mkdir -p public/css
 	cat $(CSS) > public/css/dapp.css
 
-js: tmp/TrezorMultiSig2of3.js tmp/bundle.js $(JS)
+js: tmp/MultiSig2of3.js tmp/bundle.js $(JS)
 	mkdir -p public/js
-	cat tmp/TrezorMultiSig2of3.js tmp/bundle.js $(JS) > public/js/dapp.js
+	cat tmp/MultiSig2of3.js tmp/bundle.js $(JS) > public/js/dapp.js
 
-tmp/TrezorMultiSig2of3.js: build/contracts/TrezorMultiSig2of3.json
-	printf "var TrezorMultiSig2of3Compiled = " > tmp/TrezorMultiSig2of3.js
-	cat build/contracts/TrezorMultiSig2of3.json >> tmp/TrezorMultiSig2of3.js
-	echo "" >> tmp/TrezorMultiSig2of3.js
+tmp/MultiSig2of3.js: build/contracts/MultiSig2of3.json
+	printf "var MultiSig2of3Compiled = " > tmp/MultiSig2of3.js
+	cat build/contracts/MultiSig2of3.json >> tmp/MultiSig2of3.js
+	echo "" >> tmp/MultiSig2of3.js
 
 tmp/bundle.js:
 	$(BROWSERIFY) $(JS_BROWSERIFY) > tmp/bundle.js
@@ -141,6 +141,6 @@ test:
 	./scripts/test
 
 myth:
-	$(MYTH) -g tmp/myth.json -t -x contracts/TrezorMultiSig2of3.sol
+	$(MYTH) -g tmp/myth.json -t -x contracts/MultiSig2of3.sol
 
 .PHONY: test compile

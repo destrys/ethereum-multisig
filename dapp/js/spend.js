@@ -73,7 +73,7 @@ function ensureAddressIsContract(address, callback, errback) {
 }
 
 function ensureContractVersionIsCompatible(address, callback, errback) {
-    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 	address, 
 	function(contractError, contract) {
 	    if (contractError) {
@@ -197,7 +197,7 @@ function enableAmountInputFeedback() {
 function getMessageToSign(source, destination, amount, callback, errback) {
     connectionAlive(
 	function() {
-	    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+	    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 		source, 
 		function(contractError, contract) {
 		    if (contractError) {
@@ -469,7 +469,7 @@ function broadcastSpend(callback, errback) {
     console.log('TEST', source, destination, amount, sigs);
     withValidAccount(
 	function(account) {
-	    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+	    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 		source, 
 		function(contractErr, contract) {
 		    if (contractErr) {

@@ -184,7 +184,7 @@ target="_blank">bug bounty</a> for this project.</p>
 
 <p>The source code of the smart contract used by this version of this
 application is below.  You can also find
-it <a href="https://github.com/unchained-capital/ethereum/blob/master/contracts/TrezorMultiSig2of3.sol"
+it <a href="https://github.com/unchained-capital/ethereum-multisig/blob/master/contracts/MultiSig2of3.sol"
 target="_blank">on GitHub</a> or see it
 on <a href="http://etherscan.io/" target="_blank">Etherscan</a> for
 any contract created by this application.</p>
@@ -213,7 +213,7 @@ any contract created by this application.</p>
 // ADDITIONAL WARNING: This contract is **NOT** ERC20 compatible.
 // Tokens sent to this contract will be lost forever.
 //
-contract TrezorMultiSig2of3 {
+contract MultiSig2of3 {
 
   // The 3 addresses which control the funds in this contract.  The
   // owners of 2 of these addresses will need to both sign a message
@@ -254,7 +254,7 @@ contract TrezorMultiSig2of3 {
 
   // The fallback function for this contract.
   function() public payable {
-    emit Funded(address(this).balance);
+    emit Funded(this.balance);
   }
 
   // Generates the message to sign given the output destination address and amount.

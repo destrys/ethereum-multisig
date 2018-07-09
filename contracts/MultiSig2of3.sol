@@ -22,7 +22,7 @@ pragma solidity ^0.4.24;
 // ADDITIONAL WARNING: This contract is **NOT** ERC20 compatible.
 // Tokens sent to this contract will be lost forever.
 //
-contract TrezorMultiSig2of3 {
+contract MultiSig2of3 {
 
   // The 3 addresses which control the funds in this contract.  The
   // owners of 2 of these addresses will need to both sign a message
@@ -63,7 +63,7 @@ contract TrezorMultiSig2of3 {
 
   // The fallback function for this contract.
   function() public payable {
-    emit Funded(address(this).balance);
+    emit Funded(this.balance);
   }
 
   // Generates the message to sign given the output destination address and amount.
