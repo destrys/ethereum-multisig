@@ -87,13 +87,30 @@ function walletSelectorFeedback(select, field) {
 	var signerNew = $(this).closest('.signer-new');
 	var path = signerNew.find('.signer-bip32-path').val();
  	var check = validateLedgerBIP32Path(path);
-	if (event.target.value === 'Ledger' && !check.valid) {
-	    var ledgerStr = "Warning: The standard Ledger ethereum app\
-                currently only supports BIP32 paths that begin with\
-                m/44'/60' or m/44'/1'";
-	    $(this).closest('form').find('.ledger-warning').html(ledgerStr);
+	var protocol = $("#select-protocol").val();
+	if (event.target.value === 'Ledger') {
+	    if (!check.valid) {
+   	        var ledgerStr = "Warning: The standard Ledger ethereum app\
+                    currently only supports BIP32 paths that begin with\
+                    m/44'/60' or m/44'/1'";
+	        $(this).closest('form').find('.ledger-warning').html(ledgerStr);
+	    }
+	    var ledgerTips = "If using the standard Ledger ethereum app,\
+                'Browser support' needs to be activated via the 'Settings'\
+                menu in-app on the ledger.";
+            $(this).closest('form').find('.ledger-tips').html(ledgerTips);
+	    if (protocol === 'http:') {
+		var ledgerHttp = "Ledger requires an HTTPS connection. If\
+                    you are running this dapp locally, we provde a\
+                    'make https-server' command. You may need to accept\
+                    an insecure connection warning from you browser to use this\
+                    option."
+	        $(this).closest('form').find('.ledger-warning-http').html(ledgerHttp);
+	    }
 	} else {
 	    $(this).closest('form').find('.ledger-warning').html('');
+	    $(this).closest('form').find('.ledger-tips').html('');
+	    $(this).closest('form').find('.ledger-warning-http').html('');	    
 	}
     });
 }
