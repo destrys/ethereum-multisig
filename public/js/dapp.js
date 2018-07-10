@@ -88028,10 +88028,10 @@ function setDebuggingInfoText() {
         info = "To use parity while accessing the dApp with a local webserver at http://, you need to allow access to parity by include this flag: <code>--jsonrpc-cors http://localhost:8435</code>";
         break;
     case /.*Gethfile\:/.test(combinedConnectionInfo):
-        info = "To use geth while accessing the dApp with file://, you need to allow access to parity by include this flag: <code>--rpccorsdomain null</code>";
+        info = "To use geth while accessing the dApp with file://, you need to allow access to parity by include these flags: <code>--rpccorsdomain null --rpc --nousb</code>";
         break;
     case /.*Gethhttp\:/.test(combinedConnectionInfo):
-        info = "To authorize geth to allow connections from a local webserver include this flag: <code>--rpccorsdomain http://localhost:8435</code>";
+        info = "To authorize geth to allow connections from a local webserver include these flags: <code>--rpccorsdomain http://localhost:8435  --rpc --nousb</code>";
         break;
     case /.*Metamaskfile\:/.test(combinedConnectionInfo):
         info = "MetaMask is not compatible with file:// You will need to use a local webserver, access the remotely hosted dApp, or use a node such as parity or geth.";
