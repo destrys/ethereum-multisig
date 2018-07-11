@@ -194,7 +194,7 @@ any contract created by this application.</p>
 
 <pre><code id="solidity-contract" class="solidity">pragma solidity ^0.4.24;
 
-// A 2/3 multisig contract which is compatible with Trezor-signed messages.
+// A 2/3 multisig contract compatible with Trezor or Ledger-signed messages.
 //
 // To authorize a spend, two signtures must be provided by 2 of the 3 owners.
 // To generate the message to be signed, provide the destination address and
@@ -205,15 +205,11 @@ any contract created by this application.</p>
 // See the test file for example inputs.
 //
 // If you use other software than the provided dApp or scripts to sign the
-// message, verify that the message shown by the trezor device matches the
+// message, verify that the message shown by the device matches the
 // generated message in hex.
 //
 // WARNING: The generated message is only valid until the next spend
 //          is executed. After that, a new message will need to be calculated.
-//
-// WARNING: The signing algorithm Trezor uses is different than that
-// of Ledger, Geth, Etc. This contract is for Trezor managed private
-// keys ONLY.
 //
 // ADDITIONAL WARNING: This contract is **NOT** ERC20 compatible.
 // Tokens sent to this contract will be lost forever.
@@ -239,7 +235,7 @@ contract MultiSig2of3 {
     // An event sent when a spend is triggered to the given address.
     event Spent(address to, uint transfer);
 
-    // Instantiate a new Trezor Multisig 2 of 3 contract owned by the
+    // Instantiate a new Multisig 2 of 3 contract owned by the
     // three given addresses
     constructor(address owner1, address owner2, address owner3) public {
         address zeroAddress = 0x0;
@@ -329,12 +325,12 @@ contract MultiSig2of3 {
     }
 
     // Generate the the unsigned message (in bytes32) that each owner's
-    // Trezor would have signed for the given destination and amount.
+    // wallet would have signed for the given destination and amount.
     //
     // The generated message from generateMessageToSign is converted to
     // ascii when signed by a trezor.
     //
-    // The required Trezor signing prefix, the length of this
+    // The required signing prefix, the length of this
     // unsigned message, and the unsigned ascii message itself are
     // then concatenated and hashed with keccak256.
     function _messageToRecover(
