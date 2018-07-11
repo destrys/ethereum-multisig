@@ -12,12 +12,18 @@ var bip32_path = process.argv[2];
 // Since we can pass hex, can we remove the ascii conversion in the contract?
 var message = Buffer.from(process.argv[3]).toString("hex");
 
-console.log("Message Hex: " + message);
+function translateV(v) {
+    if (v === 27) {
+	return "1b"
+    } else if (v === 28) {
+	return "1c"
+    } else {
+	throw new Error("Invalid Signture V field: " + v)
+    }
+}
 
 TransportHID.create().then(transport => {
     new LedgerEth(transport).signPersonalMessage(bip32_path, message).then(result => {
-        console.log("Signature R: 0x" + result['r']);
-        console.log("Signature S: 0x" + result['s']);
-        console.log("Signature V: 0x0" + (result['v'] - 27));
+        console.log(result['r'] + result['s'] + translateV(result['v']));
     });
 })

@@ -1,7 +1,7 @@
 {
   "name": "unchained-ethereum-multisig",
   "version": "1.0.0",
-  "description": "2/3-multisig Trezor-backed cold wallet.",
+  "description": "2 of 3 multisig hardware wallet backed smart contract.",
   "main": "truffle.js",
   "directories": {
     "test": "test"
@@ -17,11 +17,13 @@
     "ethereum",
     "solidity",
     "multisig",
-    "trezor"
+    "trezor",
+    "ledger"
   ],
   "author": "Destry Saul <destry@unchained-capital.com>",
   "contributors": [
-    "Dhruv Bansal <dhruv@unchained-capital.com>"
+    "Dhruv Bansal <dhruv@unchained-capital.com>",
+    "Chris Howe <chris@unchained-capital.com>"
   ],
   "license": "Apache-2.0",
   "bugs": {
@@ -30,9 +32,8 @@
   "homepage": "https://github.com/unchained-capital/ethereum-multisig#readme",
   "devDependencies": {
     "@ledgerhq/hw-app-eth": "^4.7.3",
-    "@ledgerhq/hw-app-btc": "^4.12.0",
-    "@ledgerhq/hw-transport-node-hid": "^4.7.6",
     "@ledgerhq/hw-transport-u2f": "^4.12.0",
+    "@ledgerhq/hw-transport-node-hid": "^4.7.6",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.0.0",
     "browserify": "^15.2.0",

@@ -4,7 +4,6 @@
 	"security"
     ],
     "rules": {
-	"indentation": 0,	
 	"quotes": [
 	    "error",
 	    "double"
