@@ -5,7 +5,7 @@ import sys
 import json
 import codecs
 from warnings import warn
-from eth_utils import force_bytes
+from eth_utils import to_bytes
 
 
 from web3 import Web3, HTTPProvider
@@ -13,7 +13,7 @@ from web3 import Web3, HTTPProvider
 LOCAL_NODE = 'http://localhost:8545'
 
 def main(contract_address, destination_address, amount):
-    contract_json = json.load(open('./build/contracts/TrezorMultisig2of3.json'))
+    contract_json = json.load(open('./build/contracts/Multisig2of3.json'))
     w3 = Web3(HTTPProvider(LOCAL_NODE, request_kwargs={'timeout': 60}))
     
     contract = w3.eth.contract(address=contract_address,abi=contract_json['abi'])
@@ -21,7 +21,7 @@ def main(contract_address, destination_address, amount):
     message = contract.call().generateMessageToSign(destination_address, wei)
 
     # https://github.com/ethereum/web3.py/issues/193
-    print(force_bytes(message).hex())
+    print(to_bytes(message).hex())
     
 
 if __name__ == '__main__':

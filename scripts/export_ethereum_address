@@ -4,6 +4,7 @@ import sys
 
 from trezorlib.client import TrezorClient
 from trezorlib.device import TrezorDevice
+from eth_utils import to_checksum_address
 
 def main(path):
     # List all connected TREZORs on USB
@@ -22,7 +23,8 @@ def main(path):
     bip32_path = client.expand_path(path)
     
     address = client.ethereum_get_address(bip32_path, True)
-    print("0x"+address.hex())
+    address = "0x" + address.hex()
+    print(to_checksum_address(address))
 
     client.close()
 
