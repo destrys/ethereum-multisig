@@ -162,7 +162,7 @@ function setAddedSignerCount() {
 // == Vault Creation ==
 //
 
-var CREATE_GAS_LIMIT = 1100000;
+var CREATE_GAS_LIMIT = 1300000;
 
 function enableCreateVaultForm() {
     $('#create-vault-form').submit(function(event) {
