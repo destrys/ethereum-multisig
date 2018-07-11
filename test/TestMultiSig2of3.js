@@ -137,7 +137,7 @@ contract('When first created', function(accounts) {
     it("emits a 'Funded' event when accepting funds", function() {
 	return testContract.sendTransaction({ from: accounts[0], to: testContract.address, value: deposit}).then(function(result) {
 	    assert.equal(result.logs[0].event, "Funded");
-	    assert.equal(result.logs[0].args.new_balance.toString(), deposit.toString());
+	    assert.equal(result.logs[0].args.newBalance.toString(), deposit.toString());
 	});
     });
 
@@ -221,7 +221,7 @@ contract('When already funded', function(accounts) {
     it("emits a 'Funded' event when accepting funds", function() {
 	return testContract.sendTransaction({ from: accounts[0], to: testContract.address, value: deposit}).then(function(result) {
 	    assert.equal(result.logs[0].event, "Funded");
-	    assert.equal(result.logs[0].args.new_balance.toString(), (deposit * 2).toString());
+	    assert.equal(result.logs[0].args.newBalance.toString(), (deposit * 2).toString());
 	});
     });
 

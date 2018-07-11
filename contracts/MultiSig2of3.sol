@@ -1,5 +1,6 @@
 pragma solidity ^0.4.24;
 
+
 // A 2/3 multisig contract compatible with Trezor or Ledger-signed messages.
 //
 // To authorize a spend, two signtures must be provided by 2 of the 3 owners.
@@ -36,7 +37,7 @@ contract MultiSig2of3 {
     uint256 public unchainedMultisigVersionMinor = 0;
 
     // An event sent when funds are received.
-    event Funded(uint new_balance);
+    event Funded(uint newBalance);
 
     // An event sent when a spend is triggered to the given address.
     event Spent(address to, uint transfer);
@@ -71,7 +72,9 @@ contract MultiSig2of3 {
     function generateMessageToSign(
         address destination,
         uint256 value
-    ) public view returns (bytes32) {
+    )
+        public view returns (bytes32)
+    {
         require(destination != address(this), "invalid destination");
         bytes32 message = keccak256(
             abi.encodePacked(
@@ -96,7 +99,9 @@ contract MultiSig2of3 {
         uint8 v2,
         bytes32 r2,
         bytes32 s2
-    ) public {
+    )
+        public
+    {
         // This require is handled by generateMessageToSign()
         // require(destination != address(this));
         require(address(this).balance >= value, "insufficient balance");
@@ -121,10 +126,18 @@ contract MultiSig2of3 {
         uint256 value,
         uint8 v1, bytes32 r1, bytes32 s1,
         uint8 v2, bytes32 r2, bytes32 s2
-    ) private view returns (bool) {
+    )
+        private view returns (bool)
+    {
         bytes32 message = _messageToRecover(destination, value);
-        address addr1 = ecrecover(message, v1+27, r1, s1);
-        address addr2 = ecrecover(message, v2+27, r2, s2);
+        address addr1 = ecrecover(
+            message,
+            v1+27, r1, s1
+        );
+        address addr2 = ecrecover(
+            message,
+            v2+27, r2, s2
+        );
         require(_distinctOwners(addr1, addr2), "invalid owners");
 
         return true;
@@ -142,7 +155,9 @@ contract MultiSig2of3 {
     function _messageToRecover(
         address destination,
         uint256 value
-    ) private view returns (bytes32) {
+    )
+        private view returns (bytes32)
+    {
         bytes32 hashedUnsignedMessage = generateMessageToSign(
             destination,
             value
@@ -158,7 +173,9 @@ contract MultiSig2of3 {
     function _distinctOwners(
         address addr1,
         address addr2
-    ) private view returns (bool) {
+    )
+        private view returns (bool)
+    {
         // Check that both addresses are different
         require(addr1 != addr2, "invalid owners");
         // Check that both addresses are owners
@@ -184,7 +201,10 @@ contract MultiSig2of3 {
     // Convert from byte to ASCII of 0-f
     // http://www.unicode.org/charts/PDF/U0000.pdf
     function _char(byte b) private pure returns (byte c) {
-        if (b < 10) return byte(uint8(b) + 0x30);
-        else return byte(uint8(b) + 0x57);
+        if (b < 10) {
+            return byte(uint8(b) + 0x30);
+        } else {
+            return byte(uint8(b) + 0x57);
+        }
     }
 }
