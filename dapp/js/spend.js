@@ -273,14 +273,18 @@ function enableSignMessageForms() {
 	var message = $('#spend-message-trezor').html();
 	var minimumTrezorFirmware = "1.6.2"	
 	if (wallet == 'Trezor') {	
-     	    TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
+     	    TrezorConnect.ethereumSignMessage({
+                path: form.find('input.signer-bip32-path').val(),
+                message: message
+            }).then(function(result) {
 		if (result.success) {
-		    console.info("Successfully signed message: ", result);
-		    activateSignature(form.closest('.signature'), result);
+                    let payload = result.payload;
+		    console.info("Successfully signed message: ", payload);
+		    activateSignature(form.closest('.signature'), payload);
 		    // parse signature into r,s,v
 		} else {
-		    console.error(result.error);
-		    form.find('.trezor-errors').html(result.error);
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
 		}
 	    }, minimumTrezorFirmware);
 	} else if (wallet == 'Ledger') {

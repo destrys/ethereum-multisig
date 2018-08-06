@@ -12718,7 +12718,7 @@ var MultiSig2of3Compiled = {
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-08-06T16:07:03.424Z"
+  "updatedAt": "2018-08-06T16:23:55.402Z"
 }
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -89534,14 +89534,18 @@ function enableSignMessageForms() {
 	var message = $('#spend-message-trezor').html();
 	var minimumTrezorFirmware = "1.6.2"	
 	if (wallet == 'Trezor') {	
-     	    TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
+     	    TrezorConnect.ethereumSignMessage({
+                path: form.find('input.signer-bip32-path').val(),
+                message: message
+            }).then(function(result) {
 		if (result.success) {
-		    console.info("Successfully signed message: ", result);
-		    activateSignature(form.closest('.signature'), result);
+                    let payload = result.payload;
+		    console.info("Successfully signed message: ", payload);
+		    activateSignature(form.closest('.signature'), payload);
 		    // parse signature into r,s,v
 		} else {
-		    console.error(result.error);
-		    form.find('.trezor-errors').html(result.error);
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
 		}
 	    }, minimumTrezorFirmware);
 	} else if (wallet == 'Ledger') {
