@@ -12718,7 +12718,7 @@ var MultiSig2of3Compiled = {
   },
   "networks": {},
   "schemaVersion": "2.0.1",
-  "updatedAt": "2018-07-11T14:16:15.730Z"
+  "updatedAt": "2018-08-06T16:07:03.424Z"
 }
 require=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -40387,30 +40387,36 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":40,"minimalistic-assert":269,"minimalistic-crypto-utils":270}],246:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.4.0",
+      "/Users/destry/code/destrys/ethereum-multisig"
+    ]
+  ],
+  "_development": true,
+  "_from": "elliptic@6.4.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.4.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.4.0",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.4.0"
   },
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "/Users/destry/code/destrys/ethereum-multisig/node_modules/browserify-sign",
+  "_spec": "6.4.0",
+  "_where": "/Users/destry/code/destrys/ethereum-multisig",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -40418,7 +40424,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -40428,7 +40433,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -89075,10 +89079,13 @@ function enableExportSignerAddressForms() {
 	var wallet = form.find('select.signer-hardware-wallet').val()
 	var minimumTrezorFirmware = "1.6.2"
 	if (wallet == 'Trezor') {
-     	    TrezorConnect.ethereumGetAddress(form.find('input.signer-bip32-path').val(), function(result) {
+     	    TrezorConnect.ethereumGetAddress({
+                path: form.find('input.signer-bip32-path').val()
+            }).then(function(result) {
        	        if (result.success) {
-		    console.info("Successfully exported account info:", result);
-		    var address = "0x"+result.address;
+                    let payload = result.payload;
+		    console.info("Successfully exported account info:", payload);
+		    var address = payload.address;
 		    var check   = validateSignerAddress(address);
 		    if (check.valid) {
 		        form.find('.trezor-errors').html('');
@@ -89088,8 +89095,8 @@ function enableExportSignerAddressForms() {
 		        form.find('button').prop('disabled', true);
 		    }
 	        } else {
-		    console.error(result.error);
-		    form.find('.trezor-errors').html(result.error);
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
 	        }
 	    },minimumTrezorFirmware);
         } else {

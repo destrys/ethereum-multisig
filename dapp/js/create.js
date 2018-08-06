@@ -52,10 +52,13 @@ function enableExportSignerAddressForms() {
 	var wallet = form.find('select.signer-hardware-wallet').val()
 	var minimumTrezorFirmware = "1.6.2"
 	if (wallet == 'Trezor') {
-     	    TrezorConnect.ethereumGetAddress(form.find('input.signer-bip32-path').val(), function(result) {
+     	    TrezorConnect.ethereumGetAddress({
+                path: form.find('input.signer-bip32-path').val()
+            }).then(function(result) {
        	        if (result.success) {
-		    console.info("Successfully exported account info:", result);
-		    var address = "0x"+result.address;
+                    let payload = result.payload;
+		    console.info("Successfully exported account info:", payload);
+		    var address = payload.address;
 		    var check   = validateSignerAddress(address);
 		    if (check.valid) {
 		        form.find('.trezor-errors').html('');
@@ -65,8 +68,8 @@ function enableExportSignerAddressForms() {
 		        form.find('button').prop('disabled', true);
 		    }
 	        } else {
-		    console.error(result.error);
-		    form.find('.trezor-errors').html(result.error);
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
 	        }
 	    },minimumTrezorFirmware);
         } else {
