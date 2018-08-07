@@ -512,6 +512,29 @@ function broadcastSpend(callback, errback) {
     );
 }
 
+function confirmSpend(txid, callback, errback) {
+    connectionAlive(
+	function() {
+	    WEB3.eth.getTransactionReceipt(
+                txid,
+                function(err, response) {
+                    if (err) {
+                        console.error(contractErr);
+                        errback(err);
+                    } else if (response) {
+                        if (response.status === "0x1") {
+                            callback(response);
+                        } else {
+                            errback("Transaction Failed");
+                        }
+                    }
+                }
+            );
+        }
+    );
+}
+
+
 function enableBroadcastSpendForm() {
     $('#broadcast-spend-form').submit(function(event) {
 	event.preventDefault();
@@ -523,10 +546,38 @@ function enableBroadcastSpendForm() {
 		$('.spend-transaction-hash').html(txid);
 		$('#pending-authorization').prop('hidden', true);
 		$('#pending-confirmation').prop('hidden', false);
+                // poll for confirmation or error
+                let intervalID = null;
+                let responded = null;
+                intervalID = setInterval(
+                    function() {
+                        confirmSpend(
+                            txid,
+                            function(response) {
+                                responded = response;
+                                if (response) {
+                                    console.log('RESPONSE', response);
+                                    $('#pending-confirmation').prop('hidden', true);
+                      		    $('#spend-success').prop('hidden', false);
+                                }
+                            },
+                            function(error) {
+                                responded = error;
+                                console.log('ERROR', error);
+                    		$('#pending-confirmation').prop('hidden', true);
+                    		$('#spend-error').prop('hidden', false);
+                            }
+                        )
+                        if (responded) {
+                            clearInterval(intervalID);
+                        }
+                    }
+                , 1500);
 	    },
 	    function(error) {
 		$('#broadcast-spend-errors').html(error);
-	    });
+	    }
+        );
     });
 }
 

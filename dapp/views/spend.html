@@ -167,7 +167,7 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
-    <div id="spent" class="card" hidden>
+    <div id="spend-success" class="card" hidden>
       <h5 class="card-header">Transaction Confirmed</h5>
       <div class="card-body">
 	<p class="card-text">The following transaction was confirmed:</p>
@@ -175,6 +175,15 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
+    <div id="spend-error" class="card" hidden>
+      <h5 class="card-header">Transaction Error</h5>
+      <div class="card-body">
+	<p class="card-text">There spending transaction failed:</p>
+	<%{ 'spend_transaction' {txid: true} }%>
+      </div>
+    </div>    
+
+    
     <%{ 'signature' {number: 1} }%>
     <%{ 'signature' {number: 2} }%>
   </div>

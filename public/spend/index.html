@@ -287,7 +287,7 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
-    <div id="spent" class="card" hidden>
+    <div id="spend-success" class="card" hidden>
       <h5 class="card-header">Transaction Confirmed</h5>
       <div class="card-body">
 	<p class="card-text">The following transaction was confirmed:</p>
@@ -317,6 +317,37 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
+    <div id="spend-error" class="card" hidden>
+      <h5 class="card-header">Transaction Error</h5>
+      <div class="card-body">
+	<p class="card-text">There spending transaction failed:</p>
+	<dl class="row">
+  <dt class="col-3">Source</dt>
+  <dd class="col-9"><code class="spend-source-address"></code></dd>
+
+  <dt class="col-3">Version</dt>
+  <dd class="col-9"><span class="spend-source-version"></span></dd>
+
+  <dt class="col-3">Available Balance</dt>
+  <dd class="col-9"><span class="spend-source-balance"></span> ETH</dd>
+
+  <dt class="col-3">Destination</dt>
+  <dd class="col-9"><code class="spend-destination-address"></code></dd>
+
+  <dt class="col-3">Amount to Send</dt>
+  <dd class="col-9"><span class="spend-amount"></span> ETH</dd>
+
+
+  <dt class="col-3">TXID</dt>
+  <dd class="col-9"><code class="spend-transaction-hash"></code></dd>
+
+
+</dl>
+
+      </div>
+    </div>    
+
+    
     <div class="card signature" hidden>
   <h5 class="card-header">Signature 1</h5>
   <div class="card-body">
