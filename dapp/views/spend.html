@@ -178,7 +178,13 @@ signature via a (preferably secure) side-channel such as email.</p>
     <div id="spend-error" class="card" hidden>
       <h5 class="card-header">Transaction Error</h5>
       <div class="card-body">
-	<p class="card-text">There spending transaction failed:</p>
+	<p class="card-text">The spending transaction failed.
+          <ul>
+            <li>Are you using the same Hardware Wallets you used to create the vault?</li>
+            <li>Did you use the correct BIP32 path?</li>
+            <li>Did you provide enough gas for the transaction?</li>
+          </ul>
+        </p>
 	<%{ 'spend_transaction' {txid: true} }%>
       </div>
     </div>    

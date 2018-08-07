@@ -96,8 +96,9 @@ function walletSelectorFeedback(select, field) {
 	        $(this).closest('form').find('.ledger-warning').html(ledgerStr);
 	    }
 	    var ledgerTips = "If using the standard Ledger ethereum app,\
-                'Browser support' needs to be activated via the 'Settings'\
-                menu in-app on the ledger.";
+                'Browser support' may need to be activated via the 'Settings'\
+                menu in-app on the ledger (depending on the version of the \
+                ETH ledgerapp).";
             $(this).closest('form').find('.ledger-tips').html(ledgerTips);
 	    if (protocol === 'http:') {
 		var ledgerHttp = "Ledger requires an HTTPS connection. If\
