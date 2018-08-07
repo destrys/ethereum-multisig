@@ -21,6 +21,23 @@ pragma solidity ^0.4.24;
 // ADDITIONAL WARNING: This contract is **NOT** ERC20 compatible.
 // Tokens sent to this contract will be lost forever.
 //
+// ERROR CODES:
+//
+// 1: Invalid Owner Address. You must provide three distinct addresses.
+//    None of the provided addresses may be 0x00.
+// 2: Invalid Destination. You may not send ETH to this contract's address.
+// 3: Insufficient Balance. You have tried to send more ETH that this
+//    contract currently owns.
+// 4: Invalid Signature. The provided signature does not correspond to
+//    the provided destination, amount, nonce and current contract.
+//    Did you swap the R and S fields?
+// 5: Invalid Signers. The provided signatures are correctly signed, but are
+//    not signed by the correct addresses. You must provide signatures from
+//    two of the owner addresses.
+
+
+
+
 contract MultiSig2of3 {
 
     // The 3 addresses which control the funds in this contract.  The
@@ -47,13 +64,13 @@ contract MultiSig2of3 {
     constructor(address owner1, address owner2, address owner3) public {
         address zeroAddress = 0x0;
 
-        require(owner1 != zeroAddress, "invalid owner1");
-        require(owner2 != zeroAddress, "invalid owner2");
-        require(owner3 != zeroAddress, "invalid owner3");
+        require(owner1 != zeroAddress, "1");
+        require(owner2 != zeroAddress, "1");
+        require(owner3 != zeroAddress, "1");
 
-        require(owner1 != owner2, "owners must be distinct");
-        require(owner2 != owner3, "owners must be distinct");
-        require(owner1 != owner3, "owners must be distinct");
+        require(owner1 != owner2, "1");
+        require(owner2 != owner3, "1");
+        require(owner1 != owner3, "1");
 
         owners[owner1] = true;
         owners[owner2] = true;
@@ -75,7 +92,7 @@ contract MultiSig2of3 {
     )
         public view returns (bytes32)
     {
-        require(destination != address(this), "invalid destination");
+        require(destination != address(this), "2");
         bytes32 message = keccak256(
             abi.encodePacked(
                 spendNonce,
@@ -104,7 +121,7 @@ contract MultiSig2of3 {
     {
         // This require is handled by generateMessageToSign()
         // require(destination != address(this));
-        require(address(this).balance >= value, "insufficient balance");
+        require(address(this).balance >= value, "3");
         require(
             _validSignature(
                 destination,
@@ -112,7 +129,7 @@ contract MultiSig2of3 {
                 v1, r1, s1,
                 v2, r2, s2
             ),
-            "invalid signature");
+            "4");
         spendNonce = spendNonce + 1;
         destination.transfer(value);
         emit Spent(destination, value);
@@ -138,7 +155,7 @@ contract MultiSig2of3 {
             message,
             v2+27, r2, s2
         );
-        require(_distinctOwners(addr1, addr2), "invalid owners");
+        require(_distinctOwners(addr1, addr2), "5");
 
         return true;
     }
@@ -177,10 +194,10 @@ contract MultiSig2of3 {
         private view returns (bool)
     {
         // Check that both addresses are different
-        require(addr1 != addr2, "invalid owners");
+        require(addr1 != addr2, "5");
         // Check that both addresses are owners
-        require(owners[addr1], "invalid owners");
-        require(owners[addr2], "invalid owners");
+        require(owners[addr1], "5");
+        require(owners[addr2], "5");
         return true;
     }
 
