@@ -1,5 +1,4 @@
-# <img src="https://github.com/destrys/ethereum-multisig/blob/hosho-tag/hosho.png" height="60">
-[Hosho Audited]
+# <a href="https://medium.com/@hosho/auditing-the-unchained-capital-smart-contract-ac2d7ecea373"> <img src="https://github.com/destrys/ethereum-multisig/blob/hosho-tag/hosho.png" alt="Hosho Audited" height="60"> </a>
 
 Ethereum Multisig
 =================
