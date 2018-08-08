@@ -1,4 +1,5 @@
-![hosho-badge](/hosho.png) - [Hosho Audit]
+# <img src="https://github.com/destrys/ethereum-multisig/blob/hosho-tag/hosho.png" height="60">
+[Hosho Audited]
 
 Ethereum Multisig
 =================
@@ -383,7 +384,7 @@ caused and on any theory of liability, whether in contract, strict liability,
 or tort (including negligence or otherwise) arising in any way out of the
 use of this application, even if advised of the possibility of such damage.
 
-[hosho audit]: https://medium.com/@hosho/auditing-the-unchained-capital-smart-contract-ac2d7ecea373
+[hosho audited]: https://medium.com/@hosho/auditing-the-unchained-capital-smart-contract-ac2d7ecea373
 [trezor]: https://trezor.io/
 [ledger]: https://www.ledgerwallet.com/
 [parity]: https://www.parity.io/
