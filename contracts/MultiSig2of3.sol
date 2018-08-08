@@ -34,7 +34,8 @@ pragma solidity ^0.4.24;
 // 5: Invalid Signers. The provided signatures are correctly signed, but are
 //    not signed by the correct addresses. You must provide signatures from
 //    two of the owner addresses.
-
+//
+// Developed by Unchained Capital, Inc.
 
 
 
