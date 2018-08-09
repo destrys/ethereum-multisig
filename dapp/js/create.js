@@ -49,23 +49,49 @@ function enableExportSignerAddressForms() {
     $("form.export-signer-address-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
-	TrezorConnect.ethereumGetAddress(form.find('input.signer-bip32-path').val(), function(result) {
-	    if (result.success) {
-		console.info("Successfully exported account info:", result);
-		var address = "0x"+result.address;
-		var check   = validateSignerAddress(address);
-		if (check.valid) {
-		    form.find('.trezor-errors').html('');
-		    activateSigner(form.closest('.signer'), address);
-		} else {
-		    form.find('.trezor-errors').html(check.message);
-		    form.find('button').prop('disabled', true);
-		}
-	    } else {
-		console.error(result.error);
-		form.find('.trezor-errors').html(result.error);
-	    }
-	});
+	var wallet = form.find('select.signer-hardware-wallet').val()
+	var minimumTrezorFirmware = "1.6.2"
+	if (wallet == 'Trezor') {
+     	    TrezorConnect.ethereumGetAddress({
+                path: form.find('input.signer-bip32-path').val()
+            }).then(function(result) {
+       	        if (result.success) {
+                    let payload = result.payload;
+		    console.info("Successfully exported account info:", payload);
+		    var address = payload.address;
+		    var check   = validateSignerAddress(address);
+		    if (check.valid) {
+		        form.find('.trezor-errors').html('');
+		        activateSigner(form.closest('.signer'), address);
+		    } else {
+		        form.find('.trezor-errors').html(check.message);
+		        form.find('button').prop('disabled', true);
+		    }
+	        } else {
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
+	        }
+	    },minimumTrezorFirmware);
+        } else {
+            var z = TransportU2F.create().then(transport => {
+                var ledgereth = new LedgerEth(transport);
+	    	ledgereth.getAddress(form.find('input.signer-bip32-path').val()).then(function(result) {
+                    console.info("Successfully exported account info:", result.address);
+		    var address = result.address;
+		    var check   = validateSignerAddress(address);
+		    if (check.valid) {
+		        form.find('.trezor-errors').html('');
+		        activateSigner(form.closest('.signer'), address);
+		    } else {
+		        form.find('.trezor-errors').html(check.message);
+		        form.find('button').prop('disabled', true);
+		    }
+	        }, function(reason) {
+		    console.error(reason);
+		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+	        });
+	    });
+	}
     });
 }
 
@@ -139,7 +165,7 @@ function setAddedSignerCount() {
 // == Vault Creation ==
 //
 
-var CREATE_GAS_LIMIT = 1100000;
+var CREATE_GAS_LIMIT = 1300000;
 
 function enableCreateVaultForm() {
     $('#create-vault-form').submit(function(event) {
@@ -155,8 +181,8 @@ function enableCreateVaultForm() {
 		$('#create-vault').prop('hidden', true);
 		pendingAuthorization.prop('hidden', false);
 		var addresses = currentSignerAddresses();
-		deployedContract = WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).new(addresses[0], addresses[1], addresses[2],{
-		    data: TrezorMultiSig2of3Compiled.bytecode,
+		deployedContract = WEB3.eth.contract(MultiSig2of3Compiled.abi).new(addresses[0], addresses[1], addresses[2],{
+		    data: MultiSig2of3Compiled.bytecode,
 		    from: account,
 		    gas:  CREATE_GAS_LIMIT,
 		}, function(err, newContract) {

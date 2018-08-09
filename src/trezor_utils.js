@@ -1,4 +1,4 @@
-var trezor = require("trezor.js-node");
+var trezor = require("trezor.js");
 
 function jsonize(obj) {
     // console.info(JSON.stringify);
@@ -98,11 +98,11 @@ function deviceListConnectCallback(resolve, reject, interaction) {
 }
 
 function deviceListDisconnectCallback(device) {
-    console.info('DeviceList', 'device disconnected', jsonize(device));
+    console.info('DeviceList', 'device disconnected', device);
 }
 
 function deviceListDisconnectUnacquiredCallback(device) {
-    console.info("DeviceList", "unacquired device disconnected", jsonize(device));
+    console.info("DeviceList", "unacquired device disconnected", device);
 }
 
 //

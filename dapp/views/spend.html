@@ -3,10 +3,10 @@
 <h1>Spend From Vault</h1>
 
 <p class="lead">This page spends from an existing 2/3-multisig smart
-contract using 2 Trezors.</p>
+contract using 2 hardware wallets.</p>
 
-<p>You and your co-signer will need a total of 2 Trezor hardware
-wallets.  Both Trezors do not need to be co-located.  Your co-signer
+<p>You and your co-signer will need a total of 2 hardware
+wallets.  Both wallets do not need to be co-located.  Your co-signer
 can use this application on their own computer and send you their
 signature via a (preferably secure) side-channel such as email.</p>
 
@@ -93,13 +93,23 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 	<%{ 'spend_transaction' {txid: false} }%>
 
-	<p>When you export a signature below, your Trezor will display
+	<p>If signing with a Trezor, it will display
 	the following message for you to sign:</p>
 
-	<pre><code id="spend-message"></code></pre>
+	<pre><code id="spend-message-trezor"></code></pre>
 	
+	<p>If signing with a Ledger, it will display
+	the following message for you to sign:</p>
+
+	<pre><code id="spend-message-ledger"></code></pre>
+
 	<p>Once both signature are obtained, you can broadcast this
 	  spend.</p>
+
+	<p>We recommend setting the gas limit for spends to 100000 gas. This dapp
+	  should automatically set the gas limit for the broadcasting transacation.
+	</p>
+
 
 	<div class="row">
 	  <div class="col-3">
@@ -157,7 +167,7 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
-    <div id="spent" class="card" hidden>
+    <div id="spend-success" class="card" hidden>
       <h5 class="card-header">Transaction Confirmed</h5>
       <div class="card-body">
 	<p class="card-text">The following transaction was confirmed:</p>
@@ -165,6 +175,21 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
+    <div id="spend-error" class="card" hidden>
+      <h5 class="card-header">Transaction Error</h5>
+      <div class="card-body">
+	<p class="card-text">The spending transaction failed.
+          <ul>
+            <li>Are you using the same Hardware Wallets you used to create the vault?</li>
+            <li>Did you use the correct BIP32 path?</li>
+            <li>Did you provide enough gas for the transaction?</li>
+          </ul>
+        </p>
+	<%{ 'spend_transaction' {txid: true} }%>
+      </div>
+    </div>    
+
+    
     <%{ 'signature' {number: 1} }%>
     <%{ 'signature' {number: 2} }%>
   </div>

@@ -23,7 +23,7 @@ def parse_signature(signature):
 
 
 def main(contract_address, destination_address, amount, sig_1, sig_2):
-    contract_json = json.load(open('./build/contracts/TrezorMultisig2of3.json'))
+    contract_json = json.load(open('./build/contracts/Multisig2of3.json'))
     w3 = Web3(HTTPProvider(LOCAL_NODE, request_kwargs={'timeout': 60}))
     contract = w3.eth.contract(address = contract_address, abi=contract_json['abi'])
 

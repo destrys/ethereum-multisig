@@ -23,19 +23,19 @@
   <body>
     <nav class="navbar bg-light">
       <div class="container">
-	<a class="navbar-brand" href="../index.html">
+	<a class="navbar-brand" href="../index.html" target="_blank">
 	  <img src="../images/logo.png" alt="logo" /> 
-	  Ethereum Multisig Vault <small>v1.0</small>
+	  Ethereum Multisig Vault <small>v2.0</small>
 	</a>
 	<ul class="nav">
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../create/index.html" class="nav-link" >Create</a>
+            <a href="../create/index.html" class="nav-link" target="_blank">Create</a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../spend/index.html" class="nav-link">Spend</a>
+            <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../" class="nav-link">Help</a>
+            <a href="../" class="nav-link" target="_blank">Help</a>
 	  </li>
 	</ul>
 	<button class="navbar-toggler d-xl-none" type="button" data-toggle="collapse" data-target="#mainNavContent" aria-controls="mainNavContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,13 +46,13 @@
 	<div id="mainNavContent" class="collapse">
 	  <ul class="navbar-nav">
             <li class="nav-item d-lg-none">
-              <a href="../index.html" class="nav-link">Create</a>
+              <a href="../index.html" class="nav-link" target="_blank">Create</a>
             </li>
             <li class="nav-item d-lg-none">
-              <a href="../spend/index.html" class="nav-link">Spend</a>
+              <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
             </li>
             <li class="nav-item d-lg-none">
-              <a href="../help/index.html" class="nav-link">Help</a>
+              <a href="../help/index.html" class="nav-link" target="_blank">Help</a>
             </li>
 	  </ul>
 	</div>
@@ -63,10 +63,10 @@
 <h1>Spend From Vault</h1>
 
 <p class="lead">This page spends from an existing 2/3-multisig smart
-contract using 2 Trezors.</p>
+contract using 2 hardware wallets.</p>
 
-<p>You and your co-signer will need a total of 2 Trezor hardware
-wallets.  Both Trezors do not need to be co-located.  Your co-signer
+<p>You and your co-signer will need a total of 2 hardware
+wallets.  Both wallets do not need to be co-located.  Your co-signer
 can use this application on their own computer and send you their
 signature via a (preferably secure) side-channel such as email.</p>
 
@@ -172,13 +172,23 @@ signature via a (preferably secure) side-channel such as email.</p>
 </dl>
 
 
-	<p>When you export a signature below, your Trezor will display
+	<p>If signing with a Trezor, it will display
 	the following message for you to sign:</p>
 
-	<pre><code id="spend-message"></code></pre>
+	<pre><code id="spend-message-trezor"></code></pre>
 	
+	<p>If signing with a Ledger, it will display
+	the following message for you to sign:</p>
+
+	<pre><code id="spend-message-ledger"></code></pre>
+
 	<p>Once both signature are obtained, you can broadcast this
 	  spend.</p>
+
+	<p>We recommend setting the gas limit for spends to 100000 gas. This dapp
+	  should automatically set the gas limit for the broadcasting transacation.
+	</p>
+
 
 	<div class="row">
 	  <div class="col-3">
@@ -277,7 +287,7 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
-    <div id="spent" class="card" hidden>
+    <div id="spend-success" class="card" hidden>
       <h5 class="card-header">Transaction Confirmed</h5>
       <div class="card-body">
 	<p class="card-text">The following transaction was confirmed:</p>
@@ -307,6 +317,43 @@ signature via a (preferably secure) side-channel such as email.</p>
       </div>
     </div>
 
+    <div id="spend-error" class="card" hidden>
+      <h5 class="card-header">Transaction Error</h5>
+      <div class="card-body">
+	<p class="card-text">The spending transaction failed.
+          <ul>
+            <li>Are you using the same Hardware Wallets you used to create the vault?</li>
+            <li>Did you use the correct BIP32 path?</li>
+            <li>Did you provide enough gas for the transaction?</li>
+          </ul>
+        </p>
+	<dl class="row">
+  <dt class="col-3">Source</dt>
+  <dd class="col-9"><code class="spend-source-address"></code></dd>
+
+  <dt class="col-3">Version</dt>
+  <dd class="col-9"><span class="spend-source-version"></span></dd>
+
+  <dt class="col-3">Available Balance</dt>
+  <dd class="col-9"><span class="spend-source-balance"></span> ETH</dd>
+
+  <dt class="col-3">Destination</dt>
+  <dd class="col-9"><code class="spend-destination-address"></code></dd>
+
+  <dt class="col-3">Amount to Send</dt>
+  <dd class="col-9"><span class="spend-amount"></span> ETH</dd>
+
+
+  <dt class="col-3">TXID</dt>
+  <dd class="col-9"><code class="spend-transaction-hash"></code></dd>
+
+
+</dl>
+
+      </div>
+    </div>    
+
+    
     <div class="card signature" hidden>
   <h5 class="card-header">Signature 1</h5>
   <div class="card-body">
@@ -314,17 +361,17 @@ signature via a (preferably secure) side-channel such as email.</p>
     <div class="signature-new">
 
       <ul class="small">
-	<li>If the Trezor is local to this computer, choose a BIP32
+	<li>If the hardware wallet is local to this computer, choose a BIP32
 	  path and click the "Sign" button.</li>
 
-	<li>If the Trezor is held by a remote co-signer,
+	<li>If the hardware wallet is held by a remote co-signer,
 	  have <i>them</i> sign (using an instance of this same
 	  application on their computer with the same spend
 	  parameters), send it to you, and then enter it and click the
 	  "Add Signature" button.</li>
       </ul>
 
-      <p class="small">In either case, ensure that the Trezor &amp;
+      <p class="small">In either case, ensure that the hardware wallet &amp;
       BIP32 path you are signing with match those used when creating
       this vault.</p>
 
@@ -333,9 +380,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
       <h5 class="card-title">Local</h5>
 
-      <p class="card-text">Your Trezor should prompt you to sign the following message:</p>
       
-      <p class="card-text"><code class="signature-message"></code></p>
       <form class="extract-signer-signature-form">
 	<p>Choose a BIP32 path.</p>
 <div class="form-row">
@@ -344,6 +389,13 @@ signature via a (preferably secure) side-channel such as email.</p>
     <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-1-bip32-path" aria-describedby="signer-1-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
+</div>
+<div class="form-group">
+  <label for="select-hardware-wallet-1">Select Hardware Wallet:</label>
+  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-1">
+    <option>Trezor</option>
+    <option>Ledger</option>
+  </select>
 </div>
 
 	<button type="submit" class="btn btn-primary">
@@ -362,6 +414,10 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  <label for="signature-1-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-1-signature-input" aria-describedby="signer-1-signature-help" required>
 	  <small id="signer-1-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-1">
+	    <option>Trezor</option>
+	    <option>Ledger</option>
+	  </select>	  
 	</div>
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
@@ -378,6 +434,9 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dt class="col-2">BIP32 Path</dt>
   <dd class="col-10"><code class="signature-bip32-path"></code></dd>
 
+
+  <dt class="col-2">Wallet Type</dt>
+  <dd class="col-10"><code class="wallet_type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -402,10 +461,13 @@ signature via a (preferably secure) side-channel such as email.</p>
 
     <div class="signature-show signature-show-remote" hidden>
       <h5 class="card-title">Remote</h5>
-      <p class="card-text">This signature was entered manually from a signature generated by this application on a remote Trezor:</p>
+      <p class="card-text">This signature was entered manually from a signature generated by this application on a remote wallet:</p>
       <dl class="row small">
 
 
+
+  <dt class="col-2">Wallet Type</dt>
+  <dd class="col-10"><code class="wallet_type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -437,17 +499,17 @@ signature via a (preferably secure) side-channel such as email.</p>
     <div class="signature-new">
 
       <ul class="small">
-	<li>If the Trezor is local to this computer, choose a BIP32
+	<li>If the hardware wallet is local to this computer, choose a BIP32
 	  path and click the "Sign" button.</li>
 
-	<li>If the Trezor is held by a remote co-signer,
+	<li>If the hardware wallet is held by a remote co-signer,
 	  have <i>them</i> sign (using an instance of this same
 	  application on their computer with the same spend
 	  parameters), send it to you, and then enter it and click the
 	  "Add Signature" button.</li>
       </ul>
 
-      <p class="small">In either case, ensure that the Trezor &amp;
+      <p class="small">In either case, ensure that the hardware wallet &amp;
       BIP32 path you are signing with match those used when creating
       this vault.</p>
 
@@ -456,9 +518,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
       <h5 class="card-title">Local</h5>
 
-      <p class="card-text">Your Trezor should prompt you to sign the following message:</p>
       
-      <p class="card-text"><code class="signature-message"></code></p>
       <form class="extract-signer-signature-form">
 	<p>Choose a BIP32 path.</p>
 <div class="form-row">
@@ -467,6 +527,13 @@ signature via a (preferably secure) side-channel such as email.</p>
     <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-2-bip32-path" aria-describedby="signer-2-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
+</div>
+<div class="form-group">
+  <label for="select-hardware-wallet-2">Select Hardware Wallet:</label>
+  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-2">
+    <option>Trezor</option>
+    <option>Ledger</option>
+  </select>
 </div>
 
 	<button type="submit" class="btn btn-primary">
@@ -485,6 +552,10 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  <label for="signature-2-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-2-signature-input" aria-describedby="signer-2-signature-help" required>
 	  <small id="signer-2-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-2">
+	    <option>Trezor</option>
+	    <option>Ledger</option>
+	  </select>	  
 	</div>
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
@@ -501,6 +572,9 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dt class="col-2">BIP32 Path</dt>
   <dd class="col-10"><code class="signature-bip32-path"></code></dd>
 
+
+  <dt class="col-2">Wallet Type</dt>
+  <dd class="col-10"><code class="wallet_type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -525,10 +599,13 @@ signature via a (preferably secure) side-channel such as email.</p>
 
     <div class="signature-show signature-show-remote" hidden>
       <h5 class="card-title">Remote</h5>
-      <p class="card-text">This signature was entered manually from a signature generated by this application on a remote Trezor:</p>
+      <p class="card-text">This signature was entered manually from a signature generated by this application on a remote wallet:</p>
       <dl class="row small">
 
 
+
+  <dt class="col-2">Wallet Type</dt>
+  <dd class="col-10"><code class="wallet_type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -674,7 +751,7 @@ signature via a (preferably secure) side-channel such as email.</p>
     <script type="text/javascript">
       window.TREZOR_POPUP_ORIGIN = "https://connect.trezor.io";
     </script>
-    <script type="text/javascript" src="https://connect.trezor.io/4/connect.js"></script>
+    <script type="text/javascript" src="https://connect.trezor.io/5/trezor-connect.js"></script>
   </body>
 </html>
 

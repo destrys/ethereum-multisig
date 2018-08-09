@@ -3,19 +3,28 @@
 <h1>Create a New Vault</h1>
 
 <p class="lead">This page creates a new 2/3-multisig smart contract
-using 3 Trezors.</p>
+  using 3 hardware wallets.</p>
 
-<p>You and your co-signers will need a total of 3 Trezor hardware
-wallets.  Not all 3 Trezors need to be co-located.  Co-signers can use
-this application on their own computers and send you their addresses
-via a (preferably secure) side-channel such as email.</p>
+<p>You and your co-signers will need a total of 3 Trezor or Ledger hardware
+  wallets.  This has been tested with Trezor One and Ledger Nano S devices.
+  Not all 3 hardware wallets need to be co-located.  Co-signers can use
+  this application on their own computers and send you their addresses
+  via a (preferably secure) side-channel such as email.</p>
 
 <p>Each address corresponds to some BIP32 path on a co-signer's
-Trezor.  Co-signers can select whichever BIP32 path they want or each
-use the default below.  It's OK to re-use BIP32 paths from the same
-Trezor across different smart contracts.  Regardless of what you
-choose to do, <b>remember which Trezor and BIP32 path you used for
-each co-signer's address!</b></p>
+  hardware wallet.  Co-signers can select whichever BIP32 path they want or each
+  use the default below.  It's OK to re-use BIP32 paths from the same
+  wallets across different smart contracts.  Regardless of what you
+  choose to do, <b>remember which hardware wallet and BIP32 path you used for
+    each co-signer's address!</b></p>
+
+<p>Approximate Gas Costs:
+  <ul>
+    <li>Contract Creation: 1170000</li>
+    <li>Deposit ETH: 22512</li>
+    <li>Withdraw ETH: 95000</li>
+  </ul>
+</p>
 
 <div class="row">
 
@@ -88,6 +97,7 @@ each co-signer's address!</b></p>
 	  <dd class="col-9"><code class="vault-address"></code></dd>
 	</dl>
 	<p class="text-danger"><b>Warning:</b> This is an ETH address.  Do not send ETC or ERC20 tokens to this address!</p>
+	<p class="text-danger"><b>Warning:</b> Depositing to this contract will cost approximately 22512 gas. You may need to increase the gas limit of your funding transactions.</p>	
       </div>
     </div>
 

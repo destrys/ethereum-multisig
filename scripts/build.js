@@ -27,7 +27,7 @@ function compilePage(pathFragment, template, data) {
 
 compilePage("/index.html",       "help", {
     base_dir: ".",
-    contract_src: fs.readFileSync(path.join(rootDir, 'contracts/TrezorMultiSig2of3.sol'))
+    contract_src: fs.readFileSync(path.join(rootDir, 'contracts/MultiSig2of3.sol'))
 });
 compilePage("/error.html",       "error",  {base_dir: "."});
 compilePage("/spend/index.html", "spend",  {base_dir: ".."});

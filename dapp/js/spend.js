@@ -2,7 +2,7 @@
 // == Find & Validate Vault Contract ==
 //
 
-var MAJOR_VERSION = "1";
+var MAJOR_VERSION = "2";
 var MINOR_VERSION = "0";
 var VERSION       = [MAJOR_VERSION, MINOR_VERSION].join('.');
 
@@ -73,7 +73,7 @@ function ensureAddressIsContract(address, callback, errback) {
 }
 
 function ensureContractVersionIsCompatible(address, callback, errback) {
-    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 	address, 
 	function(contractError, contract) {
 	    if (contractError) {
@@ -197,7 +197,7 @@ function enableAmountInputFeedback() {
 function getMessageToSign(source, destination, amount, callback, errback) {
     connectionAlive(
 	function() {
-	    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+	    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 		source, 
 		function(contractError, contract) {
 		    if (contractError) {
@@ -225,6 +225,14 @@ function getMessageToSign(source, destination, amount, callback, errback) {
     );
 }
 
+function ledgerDisplay(message) {
+    let hash = shajs('sha256').update(message).digest('hex');
+    let first4 = hash.substring(0,4).toUpperCase();
+    let last4 = hash.substring(hash.length-4, hash.length).toUpperCase();
+    return first4 + "..." + last4
+}
+// AB1A...23BA
+
 // TODO: calculate pre-hash of message
 function enableAuthorSpendForm() {
     $("#author-spend-form").submit(function(event) {
@@ -236,11 +244,13 @@ function enableAuthorSpendForm() {
 	getMessageToSign(
 	    source, destination, amount,
 	    function(message) {
+		let displayMessage = message.slice(2)
 		$('#author-spend-errors').html('');
 		$('.spend-source-address').html(source);
 		$('.spend-destination-address').html(destination);
 		$('.spend-amount').html(amount);
-		$('#spend-message').html(message);
+		$('#spend-message-trezor').html(displayMessage);
+		$('#spend-message-ledger').html(ledgerDisplay(displayMessage));
 		$("#author-spend").prop('hidden', true);
 		$("#spend").prop('hidden', false);
 		$('.signature').prop('hidden', false);
@@ -259,18 +269,51 @@ function enableSignMessageForms() {
     $("form.extract-signer-signature-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
-	var message = $('#spend-message').html().slice(2);
-	TrezorConnect.ethereumSignMessage(form.find('input.signer-bip32-path').val(), message, function(result) {
-	    if (result.success) {
-		console.info("Successfully signed message: ", result);
-		activateSignature(form.closest('.signature'), result);
-		// parse signature into r,s,v
-	    } else {
-		console.error(result.error);
-		form.find('.trezor-errors').html(result.error);
-	    }
-	});
+	var wallet = form.find('select.signer-hardware-wallet').val()	
+	var message = $('#spend-message-trezor').html();
+	var minimumTrezorFirmware = "1.6.2"	
+	if (wallet == 'Trezor') {	
+     	    TrezorConnect.ethereumSignMessage({
+                path: form.find('input.signer-bip32-path').val(),
+                message: message
+            }).then(function(result) {
+		if (result.success) {
+                    let payload = result.payload;
+		    console.info("Successfully signed message: ", payload);
+		    activateSignature(form.closest('.signature'), payload);
+		    // parse signature into r,s,v
+		} else {
+		    console.error(result.payload.error);
+		    form.find('.trezor-errors').html(result.payload.error);
+		}
+	    }, minimumTrezorFirmware);
+	} else if (wallet == 'Ledger') {
+	    var ledgerMessage = stringToHex(message)
+            TransportU2F.create().then(transport => {
+                var ledgereth = new LedgerEth(transport);
+	    	ledgereth.signPersonalMessage(form.find('input.signer-bip32-path').val(), ledgerMessage).then(function(result) {
+		    console.info("Successfully signed message: ", result);
+		    activateLedgerSignature(form.closest('.signature'), result);
+	        }, function(reason) {
+		    console.error(reason);
+		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+	        });
+	    });
+	}
     });
+}
+
+function stringToHex (tmp) {
+    var str = '',
+        i = 0,
+        tmp_len = tmp.length,
+        c;
+ 
+    for (; i < tmp_len; i += 1) {
+        c = tmp.charCodeAt(i);
+        str += c.toString(16);
+    }
+    return str;
 }
 
 
@@ -294,6 +337,16 @@ function extractV(signature) {
     return "error"
 }
 
+function extractLedgerV(v) {
+    if (v == 28) {
+	return "0x01"
+    }
+    if (v == 27) {
+	return "0x00"
+    }
+    console.error("V not a known value");
+    return "error"
+}
 //
 // == Signature Management ==
 //
@@ -325,6 +378,37 @@ function activateSignature(signature, message) {
 
     setAddedSignatureCount();
 }
+
+function activateLedgerSignature(signature, message) {
+    var signatureNew      = signature.find('.signature-new');
+    var bip32path         = signatureNew.find('input.signer-bip32-path');        
+    var enteredSignature  = signatureNew.find('input.signature-input');
+    signatureNew.prop('hidden',  true);
+
+    if (message) {
+	var signatureShow = signature.find('.signature-show-local');
+	signatureShow.find('.signature-full').html(message.r + message.s + message.v);
+	signatureShow.find('.signature-r').html("0x" + message.r);
+	signatureShow.find('.signature-s').html("0x" + message.s);
+	signatureShow.find('.signature-v').html(extractLedgerV(message.v));
+	signatureShow.find('.signature-bip32-path').html(bip32path.val());
+    } else {
+	var signatureShow = signature.find('.signature-show-remote');
+	signatureShow.find('.signature-full').html(enteredSignature.val());
+	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
+	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
+	var tmpV = parseInt(enteredSignature.val().substring(128,130))
+	signatureShow.find('.signature-v').html(extractLedgerV(tmpV));	
+    }
+    
+
+    enteredSignature.val('');
+
+    signatureShow.prop('hidden', false);
+
+    setAddedSignatureCount();
+}
+
 
 
 function setAddedSignatureCount() {
@@ -376,7 +460,13 @@ function enableRemoveSignatureForms() {
 function enableEnterSignatureForms() {
     $("form.enter-signer-signature-form").submit(function(event) {
 	event.preventDefault();
-	activateSignature($(this).closest('.signature'));
+	var form = $(this);	
+	var wallet = form.find('select.signer-hardware-wallet').val()
+	if (wallet == 'Trezor') {
+     	    activateSignature($(this).closest('.signature'));
+	} else if (wallet == 'Ledger') {
+	    activateLedgerSignature($(this).closest('.signature'));
+	}
     });
 }
 
@@ -391,10 +481,9 @@ function broadcastSpend(callback, errback) {
     var destination = $('.spend-destination-address').html();
     var amount      = ethToWei(parseFloat($('.spend-amount').html()));
     var sigs        = currentSignatures();
-    console.log('TEST', source, destination, amount, sigs);
     withValidAccount(
 	function(account) {
-	    WEB3.eth.contract(TrezorMultiSig2of3Compiled.abi).at(
+	    WEB3.eth.contract(MultiSig2of3Compiled.abi).at(
 		source, 
 		function(contractErr, contract) {
 		    if (contractErr) {
@@ -423,6 +512,29 @@ function broadcastSpend(callback, errback) {
     );
 }
 
+function confirmSpend(txid, callback, errback) {
+    connectionAlive(
+	function() {
+	    WEB3.eth.getTransactionReceipt(
+                txid,
+                function(err, response) {
+                    if (err) {
+                        console.error(contractErr);
+                        errback(err);
+                    } else if (response) {
+                        if (response.status === "0x1") {
+                            callback(response);
+                        } else {
+                            errback("Transaction Failed");
+                        }
+                    }
+                }
+            );
+        }
+    );
+}
+
+
 function enableBroadcastSpendForm() {
     $('#broadcast-spend-form').submit(function(event) {
 	event.preventDefault();
@@ -434,10 +546,38 @@ function enableBroadcastSpendForm() {
 		$('.spend-transaction-hash').html(txid);
 		$('#pending-authorization').prop('hidden', true);
 		$('#pending-confirmation').prop('hidden', false);
+                // poll for confirmation or error
+                let intervalID = null;
+                let responded = null;
+                intervalID = setInterval(
+                    function() {
+                        confirmSpend(
+                            txid,
+                            function(response) {
+                                responded = response;
+                                if (response) {
+                                    console.log('RESPONSE', response);
+                                    $('#pending-confirmation').prop('hidden', true);
+                      		    $('#spend-success').prop('hidden', false);
+                                }
+                            },
+                            function(error) {
+                                responded = error;
+                                console.log('ERROR', error);
+                    		$('#pending-confirmation').prop('hidden', true);
+                    		$('#spend-error').prop('hidden', false);
+                            }
+                        )
+                        if (responded) {
+                            clearInterval(intervalID);
+                        }
+                    }
+                , 1500);
 	    },
 	    function(error) {
 		$('#broadcast-spend-errors').html(error);
-	    });
+	    }
+        );
     });
 }
 
