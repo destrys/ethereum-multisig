@@ -231,5 +231,4 @@ $(function () {
     enableRemoveSignerForms(); 
     enableCreateVaultForm();
     enableRestartCreateVaultForm();
-    window.onbeforeunload = function () { return ""; }
 });

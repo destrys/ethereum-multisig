@@ -621,5 +621,4 @@ $(function () {
     enableRemoveSignatureForms();
     enableModifySpendForm();
     enableBroadcastSpendForm();
-    window.onbeforeunload = function () { return ""; }
 });

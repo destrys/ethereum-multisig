@@ -46,14 +46,14 @@ implementation that we were happy with.  So we wrote this.
 
 <a name="dapp">
 
-Audited
-===
+Audit
+-----
 
 The [MultiSig2of3](contracts/MultiSig2of3.sol) contract was audited by [Hosho].  
 We have included the
 [full audit report](audit/hosho_f40143e.pdf).
 
-The audit was of the contract at commit f40143e00a378addfc5559ff743f1c8a7ca7fae3
+The audit was of the contract at commit `f40143e00a378addfc5559ff743f1c8a7ca7fae3`
 with a fingerprint of `4F436F84AB192BB664AEE206EB7ED80138481B46C9BBA7EC5C70C2774752CEDF`.
 
 dApp

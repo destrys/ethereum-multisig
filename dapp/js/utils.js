@@ -113,7 +113,13 @@ function enableSyntaxHighlighting() {
     hljs.initHighlighting();
 }
 
+function enableReloadWarningIfNeeded() {
+    if ($('#create-vault').length || $('#find-vault').length) { 
+	window.onbeforeunload = function () { return ""; }
+    }
+}
+
 $(function () {
     enableSyntaxHighlighting();
+    enableReloadWarningIfNeeded();
 });
-
