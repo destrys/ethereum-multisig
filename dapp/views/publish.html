@@ -1,0 +1,127 @@
+<%{ 'layout' }%>
+<%{ content %>
+<h1>Publish New 2/3-Multisig ETH Smart Contract</h1>
+
+<p class="lead">This page publishes a new 2/3-multisig Ethereum smart
+  contract using 3 hardware wallets.</p>
+
+<h2>Instructions</h2>
+
+<ol>
+  <li><strong>Assemble your signing quorum.</strong>  You will need
+  two co-signers in addition to yourself, each with their own hardware
+  wallet (a total of three separate hardware wallets).  You do not all
+  need to be co-located.</li>
+
+  <li><strong>Export an address for each signer.</strong> Each signer
+  will need to export an address from their hardware wallet using this
+  application.  Remote signers can independently use this application
+  to export their address and then transmit it to a chosen
+  coordinator.  (Addresses are public data, but signers may still wish
+  to use secure/private channels.)  Each signer's address will
+  correspond to
+  some <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
+  target="_blank">BIP32 path</a> in their hardware
+  wallet.  <strong>Make sure each signer records the BIP32 path they
+  used when creating this address.  These BIP32 paths will be required
+  to spend from the address later on.</strong></li>
+
+  <li><strong>Publish a new smart contract to the Ethereum
+  blockchain.</strong> Once all signers' addresses are entered into
+  the form below, use this application to publish a new 2/3-multisig
+  smart contract to the Ethereum blockchain.</li>
+
+  <li><strong>Fund your new multisig smart contract!</strong> The
+  Ethereum address you receive after publishing will be the address of
+  your new 2/3-multisig smart contract.  You can send ETH to this
+  address from any Ethereum wallet or exchange just like any other
+  address.  To spend it again, you'll need 2/3 of the signers'
+  hardware wallets &amp; BIP32 paths you used when creating it.</li>
+</ol>
+
+<div class="row">
+
+  <div class="col-md-8">
+
+    <div id="create-vault" class="card">
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Publish Contract
+	  <small class="text-muted">Signers: <span id="signers-added-count">0</span>/3</small>
+	</span>
+      </h5>
+      <div class="card-body">
+	<p class="card-text">Once you have addresses from all three signers you can publish your smart contract.</p>
+	<p class="text-danger card-text"></p>
+	<form id="create-vault-form">
+	  <button type="submit" class="btn btn-primary" disabled>
+	    <i class="fa fa-cloud-upload"></i> &nbsp;
+	    <span class="button-text">Publish</span>
+	  </button>
+	</form>
+      </div>
+    </div>
+
+    <div id="pending-authorization" class="card" hidden>
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Authorize Contract Publishing Transaction
+	  <i class="fa fa-spinner fa-spin"></i>
+	</span>
+      </h5>
+      <div class="card-body">
+	<p class="card-text">A transaction publishing your contract is about to be broadcast.</p>
+	<p class="card-text">You may need to authorize the transaction using your Ethereum client.</p>
+	<p class="text-danger card-text"></p>
+	<form id="restart-create-vault-form">
+	  <button type="submit" class="btn btn-danger" disabled>
+	    <i class="fa fa-undo"></i> &nbsp;
+	    <span class="button-text">Restart Contract Publishing</span>
+	  </button>
+	</form>
+      </div>
+    </div>
+
+    <div id="pending-confirmation" class="card" hidden>
+      <h5 class="card-header">
+	<span class="justify-content-between d-flex">
+	  Publishing Contract
+	  <i class="fa fa-spinner fa-spin"></i>
+	</span>
+      </h5>
+      <div class="card-body">
+	<p class="card-text">A transaction publishing your contract was broadcast.  We are waiting for it to confirm.</p>
+	<dl class="row">
+	  <dt class="col-2">TXID</dt>
+	  <dd class="col-10"><code class="vault-transaction-hash"></code></dd>
+	</dl>
+      </div>
+    </div>
+
+    <div id="vault" class="card" hidden>
+      <h5 class="card-header">Contract Published</h5>
+      <div class="card-body">
+	<p class="card-text">Your contract was published. <b>Record your new contract address before leaving this page.</b></p>
+	<dl class="row">
+	  <dt class="col-3">TXID</dt>
+	  <dd class="col-9"><code class="vault-transaction-hash"></code></dd>
+
+	  <dt class="col-3">Address</dt>
+	  <dd class="col-9"><code class="vault-address"></code></dd>
+	</dl>
+	<p class="text-danger"><b>Warning:</b> This is an ETH-only address.  Do not send ETC or ERC20 tokens to this address!</p>
+      </div>
+    </div>
+
+    <%{ 'signer' {number: 1} }%>
+    <%{ 'signer' {number: 2} }%>
+    <%{ 'signer' {number: 3} }%>
+  </div>
+
+  <div class="col-md-4">
+
+    <%{ 'connection' }%>
+
+  </div>
+</div>
+<%} %>

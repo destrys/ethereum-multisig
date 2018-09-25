@@ -1,21 +1,50 @@
 <%{ 'layout' }%>
 <%{ content %>
-<h1>Spend From Vault</h1>
+<h1>Spend from Existing 2/3-Multisig ETH Smart Contract</h1>
 
-<p class="lead">This page spends from an existing 2/3-multisig smart
-contract using 2 hardware wallets.</p>
+<p class="lead">This page spends from an existing 2/3-multisig
+Ethereum smart contract using 2 hardware wallets.</p>
 
-<p>You and your co-signer will need a total of 2 hardware
-wallets.  Both wallets do not need to be co-located.  Your co-signer
-can use this application on their own computer and send you their
-signature via a (preferably secure) side-channel such as email.</p>
+<h2>Instructions</h2>
+
+<ol>
+  <li><strong>Assemble with your co-signer.</strong>  You will need
+  one co-signer in addition to yourself.  Both of you will need the
+  hardware wallets
+  and <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
+  target="_blank">BIP32 paths</a> you used when you created the
+  address you are now spending from.  You do not all need to be
+  co-located.</li>
+
+  <li><strong>Import the source smart contract by entering its
+  address.</strong> The contract will be checked to make sure it was
+  created by this application and is of a recent-enough version.</li>
+
+  <li><strong>Enter the destination address and amount.</strong> Each
+  signature contains these parameters so changing any one of them will
+  invalidate any signatures you've already collected.</li>
+
+  <li><strong>Collect signatures for both signers.</strong> Both
+  signers will need to sign the transaction from the same hardware
+  wallets and using the same BIP32 paths they used when creating the
+  source address.  A remote signer can independently use this
+  application, <strong>input identical transaction details</strong>,
+  and transmit their signature to a local signer.  (Signature are
+  public data, but signers may still wish to use secure/private
+  channels.)</li>
+
+  <li><strong>Broadcast the doubly-signed transaction to the Ethereum
+  blockchain.</strong> Once both signers' signatures are entered into
+  the form below, use this application to broadcast the transaction to
+  the Ethereum blockchain.</li>
+</ol>
 
 <div class="row">
 
   <div class="col-md-8">
 
     <div id="find-vault" class="card">
-      <h5 class="card-header">Find Vault Contract</h5>
+      <h5 class="card-header">Import Source Contract</h5>
       <form id="find-vault-form">
 	<div class="card-body">
 	  <div class="form-group">
@@ -26,7 +55,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  </div>
    	  <button class="btn btn-primary" type="submit" disabled>
 	    <i class="fa fa-download"></i> &nbsp;
-	    Import
+	    Import this address
 	  </button>
 	  <p class="text-danger card-text vault-address-errors"></p>
 	</div>
@@ -34,15 +63,15 @@ signature via a (preferably secure) side-channel such as email.</p>
     </div>
 
     <div id="author-spend" class="card" hidden>
-      <h5 class="card-header">Author Spend Transaction</h5>
+      <h5 class="card-header">Enter Transaction Details</h5>
       <form id="author-spend-form">
 	<div class="card-body">
 	  <div class="row">
 	    <div class="col-9">
 	      <div class="form-group">
-		<label for="vault-address">Vault Address</label>
+		<label for="vault-address">Source Contract Address</label>
 		<input type="text" class="form-control form-control-sm" id="author-spend-source-address-input" aria-describedby="author-spend-source-address-input-help" required readonly>
-		<small id="author-spend-source-address-input-help" class="form-text text-muted">The source address.</small>
+		<small id="author-spend-source-address-input-help" class="form-text text-muted">The source contract address.</small>
 	      </div>
 	    </div>
 	    <div class="col-3">
@@ -58,14 +87,14 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  <div class="row">
 	    <div class="col-9">
 	      <div class="form-group">
-		<label for="spend-amount">Spend Amount</label>
+		<label for="spend-amount">Amount</label>
 		<div class="input-group">
 		  <input type="text" class="form-control form-control-sm" id="spend-amount-input" aria-describedby="spend-amount-input-help" required>
 		  <div class="input-group-append">
 		    <span class="input-group-text">ETH</span>
 		  </div>
 		</div>
-		<small id="spend-amount-input-help" class="form-text text-muted">Amount to send.</small>
+		<small id="spend-amount-input-help" class="form-text text-muted">Amount to transfer.</small>
 		<p class="text-danger small"></p>
 	      </div>
 	    </div>
@@ -75,7 +104,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  </div>
 	  <button class="btn btn-primary" type="submit" disabled>
 	    <i class="fa fa-pencil"></i> &nbsp;
-	    Author
+	    Collect Signatures
 	  </button>
 	  <div class="text-danger card-text" id="author-spend-errors"></div>
 	</div>
@@ -92,16 +121,6 @@ signature via a (preferably secure) side-channel such as email.</p>
       <div class="card-body">
 
 	<%{ 'spend_transaction' {txid: false} }%>
-
-	<p>If signing with a Trezor, it will display
-	the following message for you to sign:</p>
-
-	<pre><code id="spend-message-trezor"></code></pre>
-	
-	<p>If signing with a Ledger, it will display
-	the following message for you to sign:</p>
-
-	<pre><code id="spend-message-ledger"></code></pre>
 
 	<p>Once both signature are obtained, you can broadcast this
 	  spend.</p>

@@ -49,11 +49,11 @@ function enableExportSignerAddressForms() {
     $("form.export-signer-address-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
-	var wallet = form.find('select.signer-hardware-wallet').val()
+	var wallet = form.find('select.wallet-account-hardware-wallet').val()
 	var minimumTrezorFirmware = "1.6.2"
 	if (wallet == 'Trezor') {
      	    TrezorConnect.ethereumGetAddress({
-                path: form.find('input.signer-bip32-path').val()
+                path: form.find('input.wallet-account-bip32-path').val()
             }).then(function(result) {
        	        if (result.success) {
                     let payload = result.payload;
@@ -69,13 +69,13 @@ function enableExportSignerAddressForms() {
 		    }
 	        } else {
 		    console.error(result.payload.error);
-		    form.find('.trezor-errors').html(result.payload.error);
+		    form.find('.trezor-errors').html("Trezor Error: " + result.payload.error);
 	        }
 	    },minimumTrezorFirmware);
         } else {
             var z = TransportU2F.create().then(transport => {
                 var ledgereth = new LedgerEth(transport);
-	    	ledgereth.getAddress(form.find('input.signer-bip32-path').val()).then(function(result) {
+	    	ledgereth.getAddress(form.find('input.wallet-account-bip32-path').val()).then(function(result) {
                     console.info("Successfully exported account info:", result.address);
 		    var address = result.address;
 		    var check   = validateSignerAddress(address);
@@ -88,7 +88,7 @@ function enableExportSignerAddressForms() {
 		    }
 	        }, function(reason) {
 		    console.error(reason);
-		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+		    form.find('.trezor-errors').html("Ledger Error: Is your Ledger plugged in, PIN entered, with Ethereum app open? (" + reason.statusText + ")");
 	        });
 	    });
 	}
@@ -110,7 +110,7 @@ function currentSignerAddresses() {
 
 function activateSigner(signer, exportedAddress) {
     var signerNew      = signer.find('.signer-new');
-    var bip32path      = signerNew.find('input.signer-bip32-path');    
+    var bip32path      = signerNew.find('input.wallet-account-bip32-path');
     var enteredAddress = signerNew.find('input.signer-address-input');
     signerNew.prop('hidden',  true);
     enteredAddress.removeClass('is-valid');
@@ -231,4 +231,5 @@ $(function () {
     enableRemoveSignerForms(); 
     enableCreateVaultForm();
     enableRestartCreateVaultForm();
+    window.onbeforeunload = function () { return ""; }
 });

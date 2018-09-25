@@ -2,35 +2,38 @@
   <h5 class="card-header">Signature <%= number %></h5>
   <div class="card-body">
 
-    <div class="signature-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32
-	  path and click the "Sign" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer,
-	  have <i>them</i> sign (using an instance of this same
-	  application on their computer with the same spend
-	  parameters), send it to you, and then enter it and click the
-	  "Add Signature" button.</li>
-      </ul>
-
-      <p class="small">In either case, ensure that the hardware wallet &amp;
-      BIP32 path you are signing with match those used when creating
-      this vault.</p>
-
-      <hr />
-
+    <div class="signature-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      
-      <form class="extract-signer-signature-form">
+      <form class="extract-signer-signature-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Sign" button.</p>
+
 	<%{ 'bip32' {number: number} }%>
+
+	<div class="spend-message-trezor-wrapper">
+	  <p>Your Trezor will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-trezor"></code></p>
+	</div>
+
+	<div class="spend-message-ledger-wrapper" hidden>
+	  <p>Your Ledger will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-ledger"></code></p>
+	</div>
+
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-thumbs-up"></i> &nbsp;
 	  Sign
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
       </form>
 
@@ -38,16 +41,26 @@
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them use this application to
+      enter the same transaction details above, sign with their own
+      hardware wallet, and send their signature to you.  Enter it
+      below and click the "Add Signature" button.</p>
+
       <form class="enter-signer-signature-form" novalidate>
 	<div class="form-group">
 	  <label for="signature-<%= number %>-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-<%= number %>-signature-input" aria-describedby="signer-<%= number %>-signature-help" required>
-	  <small id="signer-<%= number %>-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <small id="signer-<%= number %>-signature-help" class="form-text text-muted">Previously created by this application.</small>
+	</div>
+
+	<div class="form-group">
+	  <label for="select-hardware-wallet-<%= number %>">Select Hardware Wallet:</label>
 	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-<%= number %>">
-	    <option>Trezor</option>
-	    <option>Ledger</option>
+	    <option value="Trezor">Trezor One</option>
+	    <option value="Ledger">Ledger Nano S</option>
 	  </select>	  
 	</div>
+
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
 	  Add Signature

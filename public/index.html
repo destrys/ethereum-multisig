@@ -5,8 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="description" content="Ethereum Multisig Vault" />
-    <title>Ethereum Multisig Vault</title>
+    <meta name="description" content="Ethereum Multisig" />
+    <title>Ethereum Multisig</title>
 
     <link rel="stylesheet" href="./css/dapp.css" />
 
@@ -25,14 +25,14 @@
       <div class="container">
 	<a class="navbar-brand" href="./index.html" target="_blank">
 	  <img src="./images/logo.png" alt="logo" /> 
-	  Ethereum Multisig Vault <small>v2.0</small>
+	  Ethereum Multisig <small>v2.0</small>
 	</a>
 	<ul class="nav">
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="./create/index.html" class="nav-link" target="_blank">Create</a>
+            <a href="./publish/index.html" class="nav-link" target="_blank">Publish New </a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="./spend/index.html" class="nav-link" target="_blank">Spend</a>
+            <a href="./spend/index.html" class="nav-link" target="_blank">Spend from Existing</a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
             <a href="./" class="nav-link" target="_blank">Help</a>
@@ -46,13 +46,13 @@
 	<div id="mainNavContent" class="collapse">
 	  <ul class="navbar-nav">
             <li class="nav-item d-lg-none">
-              <a href="./index.html" class="nav-link" target="_blank">Create</a>
+              <a href="./publish/index.html" class="nav-link" target="_blank">Publish</a>
             </li>
             <li class="nav-item d-lg-none">
               <a href="./spend/index.html" class="nav-link" target="_blank">Spend</a>
             </li>
             <li class="nav-item d-lg-none">
-              <a href="./help/index.html" class="nav-link" target="_blank">Help</a>
+              <a href="./" class="nav-link" target="_blank">Help</a>
             </li>
 	  </ul>
 	</div>
@@ -60,22 +60,24 @@
     </nav>
     <div class="container">
       
-<h1>What is this?</h1>
+<h1>Protect Your ETH</h1>
 
 <div class="row">
   <div class="col-8">
 
     <p class="lead">This application allows you to create and spend
-    from an Ethereum 2/3-multisig smart contract using your hardware
-    wallet.</p>
+    from an Ethereum 2/3-multisig smart contract controlled by
+    hardware wallets.</p>
 
     <p>It was built by <a href="https://www.unchained-capital.com"
     target="_blank">Unchained Capital</a> to help holders worldwide
-    safely store their ETH using multisig cold-storage.  If you are
-    storing ETH on a Trezor or Ledger and you trust at least two other people,
-    you could be doing it better.  Now you can use this application
-    with your trusted friends, family, and colleagues to protect your
-    wealth.</p>
+    safely and collaboratively store their ETH using multisig
+    cold-storage provided by hardware wallets.</p>
+
+    <p>If you are storing ETH on a Trezor or Ledger and you trust at
+    least two other people, you could be doing it better.  You can use
+    this application with your trusted friends, family, and colleagues
+    to protect your wealth.</p>
 
     <p>To learn more about the design philosophy of this application
     and smart contract, read
@@ -89,6 +91,7 @@
     target="_blank">bug bounty</a> around this contract & dApp.</p>
 
   </div>
+
   <div class="col-4">
     <div class="card">
       <h5 class="card-header">Useful Links</h5>
@@ -107,70 +110,104 @@
       </div>
     </div>
   </div>
+
 </div>
 
-<h2>How does it work?</h2>
+<h2>Hardware Wallets Required</h2>
 
-<p class="lead">This application connects <a href="https://trezor.io"
-					     target="_blank">Trezor</a> and
- <a href="https://www.ledgerwallet.com/" target="_blank">Ledger</a>
-  hardware wallets with the Ethereum blockchain. <br /> It has been tested with
-the Trezor One and Ledger Nano S.</p>
+<div class="row">
+  <div class="col-8">
+    <p class="lead">This application connects hardware wallets with the
+      Ethereum blockchain.</p>
 
-<p>When creating the multisig smart contract, three hardware wallets are required.
-When spending, 2/3 of these same hardware wallets are required.  The private
-keys used to create and spend from a contract are only present on your
-hardware wallets.  This application stores no data whatsoever about you, your
-wallets, your addresses, or your transactions.</p>
+    <p>When creating the multisig smart contract, three hardware wallets are required.
+      When spending, 2/3 of these same hardware wallets are required.  The private
+      keys used to create and spend from a contract are only present on your
+      hardware wallets.  This application stores no data whatsoever about you, your
+      wallets, your addresses, or your transactions.</p>
 
-<p>This means that you are completely in control of your own security
-and accounting.  In particular:</p>
+    <p>This means that you are completely in control of your own security
+      and accounting.  In particular:</p>
 
-<ul>
-  <li>You must yourself track the addresses of the smart contracts
-  this application creates.</li>
-  <li>For each such address, you must track which harware wallets you used to
-  create the address, along with which BIP32 derivation path you used
-  with each hardware wallet (it is OK to reuse the same BIP32
-  path with each wallet).</li>
-  <li>You must protect these hardware wallets and their corresponding wallet
-  words.  2/3-multisig is a great security improvement over single-signature
-  but that's no excuse to get sloppy about the security of an
-  individual key.</li>
-</ul>
-    
-<h2>Connecting to the Ethereum network</h2>
+    <ul>
+      <li>You must yourself track the addresses of the smart contracts
+	this application creates.</li>
+      <li>For each such address, you must track which harware wallets you used to
+	create the address, along with which BIP32 derivation path you used
+	with each hardware wallet (it is OK to reuse the same BIP32
+	path with each wallet).</li>
+      <li>You must protect these hardware wallets and their corresponding wallet
+	words.  2/3-multisig is a great security improvement over single-signature
+	but that's no excuse to get sloppy about the security of an
+	individual key.</li>
+    </ul>
+  </div>
 
-<p class="lead">This application requires a funded account in a
-synced, connected Ethereum client to pay for gas.</p>
+  <div class="col-4">
+    <div class="card">
+      <h5 class="card-header">Supported Devices</h5>
+      <div class="card-body">
+	<p>
+	  This application has been tested with the following hardware wallets:
+	  <ul>
+	    <li><a href="https://shop.trezor.io/product/trezor-one-white" target="_blank">Trezor One</a></li>
+	    <li><a href="https://www.ledger.com/products/ledger-nano-s" target="_blank">Ledger Nano S</a></li>
+	  </ul>
+	</p>
+      </div>
+    </div>
+  </div>
+</div>
 
-<p>The Ethereum transactions required to create and spend from the
-smart contract will be authored by this application.  Broadcasting
-them to the Ethereum network requires a synced, connected Ethereum
-client.  The client should have an account with some modest ETH
-balance to pay for gas.  As of this writing, 0.01 ETH is more than
-sufficient.</p>
+<h2>Ethereum Client Required</h2>
 
-<p>The account used to pay for gas has absolutely no special rights to
-fund, spend from, or otherwise control the smart contract this
-application creates.  Only the private keys on the 3 hardware wallets
-you used to create the smart contract matter.  Creating and spending
-from a smart contract can be done by totally separate accounts, as
-long as this application and the same 3 hardware wallets are used.</p>
+<div class="row">
+  <div class="col-8">
+    <p class="lead">This application requires a funded account in a
+      synced, connected Ethereum client to pay for gas.</p>
 
-<p>Because of this design, a browser-based wallet such
-as <a href="https://metamask.io/" target="_blank">Metamask</a>
-provides acceptable security and is also extremely convenient.</p>
+    <p>The Ethereum transactions required to create and spend from the
+      smart contract will be authored by this application.  Broadcasting
+      them to the Ethereum network requires a synced, connected Ethereum
+      client.  The client should have an account with some modest ETH
+      balance to pay for gas.  As of this writing, 0.01 ETH is more than
+      sufficient.</p>
 
-<p>Full Ethereum nodes such as <a href="https://www.parity.io/"
-target="_blank">Parity</a> or <a href="https://geth.ethereum.org/"
-target="_blank">Geth</a> will also work, though may require some
-special configuration or browser extensions.</p>
+    <p>The account used to pay for gas has no rights to fund, spend
+      from, or otherwise control the smart contract this application
+      creates.  This means creating and spending from this smart
+      contract can be done by separate accounts, as long as this
+      application and the same 3 hardware wallets are used.</p>
 
-<p>Get more details about connecting to an Ethereum client in
-the <a href="https://github.com/unchained-capital/ethereum-multisig#dapp"
-target="_blank">dApp section</a> of the <code>README</code> for this
-GitHub repo.</p>
+    <p>We recommend you use the <a href="https://metamask.io/"
+    target="_blank">Metamask</a> plugin.  The design of the smart
+    contract allows using a convenient browser-based client such as
+    Metamask without compromising security.</p>
+
+  </div>
+
+  <div class="col-4">
+    <div class="card">
+      <h5 class="card-header">Additional Clients</h5>
+      <div class="card-body">
+
+	<p>The following clients may also be used, though they may
+	require some special configuration or browser extensions.</p>
+
+	<ul>
+	  <li><a href="https://www.parity.io/" target="_blank">Parity</a></li>
+	  <li><a href="https://geth.ethereum.org/" target="_blank">Geth</a></li>
+	</ul>
+
+	<p>See
+	the <a href="https://github.com/unchained-capital/ethereum-multisig#dapp"
+	target="_blank">dApp section</a> of the <code>README</code>
+	for this application's GitHub repo.</p>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 <h2>Feedback?</h2>
 

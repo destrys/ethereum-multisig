@@ -9,7 +9,8 @@ var viewsDir  = path.join(rootDir, 'dapp/views');
 var publicDir = path.join(rootDir, 'public');
 
 var views = pejs({
-    basedir: viewsDir
+    basedir: viewsDir,
+    watch:   false,
 });
 
 function compilePage(pathFragment, template, data) {
@@ -31,4 +32,4 @@ compilePage("/index.html",       "help", {
 });
 compilePage("/error.html",       "error",  {base_dir: "."});
 compilePage("/spend/index.html", "spend",  {base_dir: ".."});
-compilePage("/create/index.html", "create",  {base_dir: ".."});
+compilePage("/publish/index.html", "publish",  {base_dir: ".."});

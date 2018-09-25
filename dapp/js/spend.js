@@ -249,8 +249,8 @@ function enableAuthorSpendForm() {
 		$('.spend-source-address').html(source);
 		$('.spend-destination-address').html(destination);
 		$('.spend-amount').html(amount);
-		$('#spend-message-trezor').html(displayMessage);
-		$('#spend-message-ledger').html(ledgerDisplay(displayMessage));
+		$('.spend-message-trezor').html(displayMessage);
+		$('.spend-message-ledger').html(ledgerDisplay(displayMessage));
 		$("#author-spend").prop('hidden', true);
 		$("#spend").prop('hidden', false);
 		$('.signature').prop('hidden', false);
@@ -269,12 +269,13 @@ function enableSignMessageForms() {
     $("form.extract-signer-signature-form").submit(function(event) {
 	event.preventDefault();
 	var form = $(this);
-	var wallet = form.find('select.signer-hardware-wallet').val()	
-	var message = $('#spend-message-trezor').html();
+	var wallet = form.find('select.wallet-account-hardware-wallet').val();
+	var message = form.find('.spend-message-trezor').html();
+	form.find('.trezor-errors').html('');
 	var minimumTrezorFirmware = "1.6.2"	
 	if (wallet == 'Trezor') {	
      	    TrezorConnect.ethereumSignMessage({
-                path: form.find('input.signer-bip32-path').val(),
+                path: form.find('input.wallet-account-bip32-path').val(),
                 message: message
             }).then(function(result) {
 		if (result.success) {
@@ -284,19 +285,19 @@ function enableSignMessageForms() {
 		    // parse signature into r,s,v
 		} else {
 		    console.error(result.payload.error);
-		    form.find('.trezor-errors').html(result.payload.error);
+		    form.find('.trezor-errors').html("Trezor Error: " + result.payload.error);
 		}
 	    }, minimumTrezorFirmware);
 	} else if (wallet == 'Ledger') {
 	    var ledgerMessage = stringToHex(message)
             TransportU2F.create().then(transport => {
                 var ledgereth = new LedgerEth(transport);
-	    	ledgereth.signPersonalMessage(form.find('input.signer-bip32-path').val(), ledgerMessage).then(function(result) {
+	    	ledgereth.signPersonalMessage(form.find('input.wallet-account-bip32-path').val(), ledgerMessage).then(function(result) {
 		    console.info("Successfully signed message: ", result);
 		    activateLedgerSignature(form.closest('.signature'), result);
 	        }, function(reason) {
 		    console.error(reason);
-		    form.find('.trezor-errors').html("There was an ledger error: " + reason.message);
+		    form.find('.trezor-errors').html("Ledger Error: Is your Ledger plugged in, PIN entered, with Ethereum app open? (" + reason.statusText + ")");
 	        });
 	    });
 	}
@@ -325,7 +326,8 @@ function extractS(signature) {
     return "0x" + signature.substring(64, 128)
 }
 
-function extractV(signature) {
+function extractV(container, signature) {
+    container.find('.signature-errors').html("");
     var v = signature.substring(128,130)
     if (v == "1b") {
 	return "0x00"
@@ -333,27 +335,29 @@ function extractV(signature) {
     if (v == "1c") {
 	return "0x01"
     }
-    console.error("V not a known value");
+    container.find('.signature-errors').html("Could not parse signature.  Are you sure you picked the correct hardware wallet?");
     return "error"
 }
 
-function extractLedgerV(v) {
+function extractLedgerV(container, v) {
+    container.find('.signature-errors').html("");
     if (v == 28) {
 	return "0x01"
     }
     if (v == 27) {
 	return "0x00"
     }
-    console.error("V not a known value");
+    container.find('.signature-errors').html("Could not parse signature.  Are you sure you picked the correct hardware wallet?");
     return "error"
 }
+
 //
 // == Signature Management ==
 //
 
 function activateSignature(signature, message) {
     var signatureNew      = signature.find('.signature-new');
-    var bip32path         = signatureNew.find('input.signer-bip32-path');        
+    var bip32path         = signatureNew.find('input.wallet-account-bip32-path');
     var enteredSignature  = signatureNew.find('input.signature-input');
     signatureNew.prop('hidden',  true);
 
@@ -362,15 +366,17 @@ function activateSignature(signature, message) {
 	signatureShow.find('.signature-full').html(message.signature);
 	signatureShow.find('.signature-r').html(extractR(message.signature));
 	signatureShow.find('.signature-s').html(extractS(message.signature));
-	signatureShow.find('.signature-v').html(extractV(message.signature));
+	signatureShow.find('.signature-v').html(extractV(signatureShow, message.signature));
 	signatureShow.find('.signature-bip32-path').html(bip32path.val());	
     } else {
 	var signatureShow = signature.find('.signature-show-remote');
 	signatureShow.find('.signature-full').html(enteredSignature.val());
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
-	signatureShow.find('.signature-v').html(extractV(enteredSignature.val()));	
+	signatureShow.find('.signature-v').html(extractV(signatureShow, enteredSignature.val()));	
     }
+
+    signatureShow.find('.wallet-type').html('Trezor');
 
     enteredSignature.val('');
 
@@ -381,7 +387,7 @@ function activateSignature(signature, message) {
 
 function activateLedgerSignature(signature, message) {
     var signatureNew      = signature.find('.signature-new');
-    var bip32path         = signatureNew.find('input.signer-bip32-path');        
+    var bip32path         = signatureNew.find('input.wallet-account-bip32-path');
     var enteredSignature  = signatureNew.find('input.signature-input');
     signatureNew.prop('hidden',  true);
 
@@ -390,7 +396,7 @@ function activateLedgerSignature(signature, message) {
 	signatureShow.find('.signature-full').html(message.r + message.s + message.v);
 	signatureShow.find('.signature-r').html("0x" + message.r);
 	signatureShow.find('.signature-s').html("0x" + message.s);
-	signatureShow.find('.signature-v').html(extractLedgerV(message.v));
+	signatureShow.find('.signature-v').html(extractLedgerV(signatureShow, message.v));
 	signatureShow.find('.signature-bip32-path').html(bip32path.val());
     } else {
 	var signatureShow = signature.find('.signature-show-remote');
@@ -398,9 +404,10 @@ function activateLedgerSignature(signature, message) {
 	signatureShow.find('.signature-r').html(extractR(enteredSignature.val()));
 	signatureShow.find('.signature-s').html(extractS(enteredSignature.val()));
 	var tmpV = parseInt(enteredSignature.val().substring(128,130))
-	signatureShow.find('.signature-v').html(extractLedgerV(tmpV));	
+	signatureShow.find('.signature-v').html(extractLedgerV(signatureShow, tmpV));	
     }
-    
+
+    signatureShow.find('.wallet-type').html('Ledger');
 
     enteredSignature.val('');
 
@@ -452,6 +459,9 @@ function enableRemoveSignatureForms() {
 	signatureShow.find('.signature-r').html('');
 	signatureShow.find('.signature-s').html('');
 	signatureShow.find('.signature-v').html('');	
+	signatureShow.find('.wallet-type').html('');
+	signatureShow.find('.spend-message-trezor').html('');
+	signatureShow.find('.spend-message-ledger').html('');
 	signatureNew.prop('hidden',  false);
 	setAddedSignatureCount();
     });
@@ -611,4 +621,5 @@ $(function () {
     enableRemoveSignatureForms();
     enableModifySpendForm();
     enableBroadcastSpendForm();
+    window.onbeforeunload = function () { return ""; }
 });

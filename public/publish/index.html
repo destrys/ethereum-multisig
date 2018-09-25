@@ -5,8 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="description" content="Ethereum Multisig Vault" />
-    <title>Ethereum Multisig Vault</title>
+    <meta name="description" content="Ethereum Multisig" />
+    <title>Ethereum Multisig</title>
 
     <link rel="stylesheet" href="../css/dapp.css" />
 
@@ -25,14 +25,14 @@
       <div class="container">
 	<a class="navbar-brand" href="../index.html" target="_blank">
 	  <img src="../images/logo.png" alt="logo" /> 
-	  Ethereum Multisig Vault <small>v2.0</small>
+	  Ethereum Multisig <small>v2.0</small>
 	</a>
 	<ul class="nav">
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../create/index.html" class="nav-link" target="_blank">Create</a>
+            <a href="../publish/index.html" class="nav-link" target="_blank">Publish New </a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
+            <a href="../spend/index.html" class="nav-link" target="_blank">Spend from Existing</a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
             <a href="../" class="nav-link" target="_blank">Help</a>
@@ -46,13 +46,13 @@
 	<div id="mainNavContent" class="collapse">
 	  <ul class="navbar-nav">
             <li class="nav-item d-lg-none">
-              <a href="../index.html" class="nav-link" target="_blank">Create</a>
+              <a href="../publish/index.html" class="nav-link" target="_blank">Publish</a>
             </li>
             <li class="nav-item d-lg-none">
               <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
             </li>
             <li class="nav-item d-lg-none">
-              <a href="../help/index.html" class="nav-link" target="_blank">Help</a>
+              <a href="../" class="nav-link" target="_blank">Help</a>
             </li>
 	  </ul>
 	</div>
@@ -60,31 +60,44 @@
     </nav>
     <div class="container">
       
-<h1>Create a New Vault</h1>
+<h1>Publish New 2/3-Multisig ETH Smart Contract</h1>
 
-<p class="lead">This page creates a new 2/3-multisig smart contract
-  using 3 hardware wallets.</p>
+<p class="lead">This page publishes a new 2/3-multisig Ethereum smart
+  contract using 3 hardware wallets.</p>
 
-<p>You and your co-signers will need a total of 3 Trezor or Ledger hardware
-  wallets.  This has been tested with Trezor One and Ledger Nano S devices.
-  Not all 3 hardware wallets need to be co-located.  Co-signers can use
-  this application on their own computers and send you their addresses
-  via a (preferably secure) side-channel such as email.</p>
+<h2>Instructions</h2>
 
-<p>Each address corresponds to some BIP32 path on a co-signer's
-  hardware wallet.  Co-signers can select whichever BIP32 path they want or each
-  use the default below.  It's OK to re-use BIP32 paths from the same
-  wallets across different smart contracts.  Regardless of what you
-  choose to do, <b>remember which hardware wallet and BIP32 path you used for
-    each co-signer's address!</b></p>
+<ol>
+  <li><strong>Assemble your signing quorum.</strong>  You will need
+  two co-signers in addition to yourself, each with their own hardware
+  wallet (a total of three separate hardware wallets).  You do not all
+  need to be co-located.</li>
 
-<p>Approximate Gas Costs:
-  <ul>
-    <li>Contract Creation: 1170000</li>
-    <li>Deposit ETH: 22512</li>
-    <li>Withdraw ETH: 95000</li>
-  </ul>
-</p>
+  <li><strong>Export an address for each signer.</strong> Each signer
+  will need to export an address from their hardware wallet using this
+  application.  Remote signers can independently use this application
+  to export their address and then transmit it to a chosen
+  coordinator.  (Addresses are public data, but signers may still wish
+  to use secure/private channels.)  Each signer's address will
+  correspond to
+  some <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
+  target="_blank">BIP32 path</a> in their hardware
+  wallet.  <strong>Make sure each signer records the BIP32 path they
+  used when creating this address.  These BIP32 paths will be required
+  to spend from the address later on.</strong></li>
+
+  <li><strong>Publish a new smart contract to the Ethereum
+  blockchain.</strong> Once all signers' addresses are entered into
+  the form below, use this application to publish a new 2/3-multisig
+  smart contract to the Ethereum blockchain.</li>
+
+  <li><strong>Fund your new multisig smart contract!</strong> The
+  Ethereum address you receive after publishing will be the address of
+  your new 2/3-multisig smart contract.  You can send ETH to this
+  address from any Ethereum wallet or exchange just like any other
+  address.  To spend it again, you'll need 2/3 of the signers'
+  hardware wallets &amp; BIP32 paths you used when creating it.</li>
+</ol>
 
 <div class="row">
 
@@ -93,17 +106,17 @@
     <div id="create-vault" class="card">
       <h5 class="card-header">
 	<span class="justify-content-between d-flex">
-	  Create Vault
+	  Publish Contract
 	  <small class="text-muted">Signers: <span id="signers-added-count">0</span>/3</small>
 	</span>
       </h5>
       <div class="card-body">
-	<p class="card-text">Once you have addresses from all three signers you can create your vault.</p>
+	<p class="card-text">Once you have addresses from all three signers you can publish your smart contract.</p>
 	<p class="text-danger card-text"></p>
 	<form id="create-vault-form">
 	  <button type="submit" class="btn btn-primary" disabled>
 	    <i class="fa fa-cloud-upload"></i> &nbsp;
-	    <span class="button-text">Create Vault</span>
+	    <span class="button-text">Publish</span>
 	  </button>
 	</form>
       </div>
@@ -112,18 +125,18 @@
     <div id="pending-authorization" class="card" hidden>
       <h5 class="card-header">
 	<span class="justify-content-between d-flex">
-	  Authorize Vault Creation Transaction
+	  Authorize Contract Publishing Transaction
 	  <i class="fa fa-spinner fa-spin"></i>
 	</span>
       </h5>
       <div class="card-body">
-	<p class="card-text">A transaction creating your vault is about to be broadcast.</p>
+	<p class="card-text">A transaction publishing your contract is about to be broadcast.</p>
 	<p class="card-text">You may need to authorize the transaction using your Ethereum client.</p>
 	<p class="text-danger card-text"></p>
 	<form id="restart-create-vault-form">
 	  <button type="submit" class="btn btn-danger" disabled>
 	    <i class="fa fa-undo"></i> &nbsp;
-	    <span class="button-text">Restart Vault Creation</span>
+	    <span class="button-text">Restart Contract Publishing</span>
 	  </button>
 	</form>
       </div>
@@ -132,12 +145,12 @@
     <div id="pending-confirmation" class="card" hidden>
       <h5 class="card-header">
 	<span class="justify-content-between d-flex">
-	  Creating Vault
+	  Publishing Contract
 	  <i class="fa fa-spinner fa-spin"></i>
 	</span>
       </h5>
       <div class="card-body">
-	<p class="card-text">A transaction creating your vault was broadcast.  We are waiting for it to confirm.</p>
+	<p class="card-text">A transaction publishing your contract was broadcast.  We are waiting for it to confirm.</p>
 	<dl class="row">
 	  <dt class="col-2">TXID</dt>
 	  <dd class="col-10"><code class="vault-transaction-hash"></code></dd>
@@ -146,9 +159,9 @@
     </div>
 
     <div id="vault" class="card" hidden>
-      <h5 class="card-header">Vault Created</h5>
+      <h5 class="card-header">Contract Published</h5>
       <div class="card-body">
-	<p class="card-text">Your vault was created. <b>Record your new vault address before leaving this page.</b></p>
+	<p class="card-text">Your contract was published. <b>Record your new contract address before leaving this page.</b></p>
 	<dl class="row">
 	  <dt class="col-3">TXID</dt>
 	  <dd class="col-9"><code class="vault-transaction-hash"></code></dd>
@@ -156,8 +169,7 @@
 	  <dt class="col-3">Address</dt>
 	  <dd class="col-9"><code class="vault-address"></code></dd>
 	</dl>
-	<p class="text-danger"><b>Warning:</b> This is an ETH address.  Do not send ETC or ERC20 tokens to this address!</p>
-	<p class="text-danger"><b>Warning:</b> Depositing to this contract will cost approximately 22512 gas. You may need to increase the gas limit of your funding transactions.</p>	
+	<p class="text-danger"><b>Warning:</b> This is an ETH-only address.  Do not send ETC or ERC20 tokens to this address!</p>
       </div>
     </div>
 
@@ -165,38 +177,27 @@
   <h5 class="card-header">Signer 1</h5>
   <div class="card-body">
 
-    <div class="signer-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32 path,
-	  the type of hardware, and
-	  click the "Export Address" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer, have <i>them</i>
-	  export their address (using an instance of this same application on
-	  their computer), send it to you, and then enter it and click the
-	  "Add Address" button. You do not need to specify the hardware wallet
-	  type when using this method.</li>
-      </ul>
-
-      <hr />
+    <div class="signer-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      <form class="export-signer-address-form">
-	<p>Choose a BIP32 path.</p>
-<div class="form-row">
+      <form class="export-signer-address-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Export Address" button.</p>
+
+	<div class="form-row">
   <div class="form-group col">
-    <label for="signer-1-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-1-bip32-path" aria-describedby="signer-1-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-1-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-1-bip32-path" aria-describedby="wallet-account-1-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-1">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-1">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-1">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
 
@@ -204,21 +205,27 @@
 	  <i class="fa fa-upload"></i> &nbsp;
 	  Export Address
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
-	<p class="text-danger card-text ledger-warning-http"></p>	
-	<p class="text-danger card-text ledger-warning"></p>
-	<p class="text-warning card-text ledger-tips"></p>		
       </form>
 
       <hr />
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them export their address
+      (using this same application), send it to you, and then enter it
+      below and click the "Add Address" button.</p>
+
+      <p>You do not need to specify the hardware wallet type when using this method.</p>
+
       <form class="enter-signer-address-form" novalidate>
 	<div class="form-group">
 	  <label for="signer-1-address-input">Address</label>
 	  <input type="text" class="form-control form-control-sm signer-address-input" id="signer-1-address-input" aria-describedby="signer-1-address-help" required>
-	  <small id="signer-1-address-help" class="form-text text-muted">Generated by another instance of this application.</small>
+	  <small id="signer-1-address-help" class="form-text text-muted">Previously exported by this application.</small>
 	  <p class="text-danger small"></p>
 	</div>
 	<button type="submit" class="btn btn-primary" disabled>
@@ -243,7 +250,7 @@
 	  <dd class="col-9"><code class="signer-bip32-path"></code></dd>
 	</dl>
 
-	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you need it and the hardware wallet to remove funds from the vault contract.</b></p>
+	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you will need to enter it when attempting to spend funds from this contract.</b></p>
 
       </dl>
 
@@ -259,7 +266,7 @@
 
       <h5 class="card-title">Remote</h5>
 
-      <p class="card-text">This address was entered manually from an address generated by this application on a remote hardware wallet:</p>
+      <p class="card-text">This address was entered manually from an address previously exported by this application:</p>
 
       <div class="text-center">
 	<p class="card-text"><code class="signer-address"></code></p>
@@ -282,38 +289,27 @@
   <h5 class="card-header">Signer 2</h5>
   <div class="card-body">
 
-    <div class="signer-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32 path,
-	  the type of hardware, and
-	  click the "Export Address" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer, have <i>them</i>
-	  export their address (using an instance of this same application on
-	  their computer), send it to you, and then enter it and click the
-	  "Add Address" button. You do not need to specify the hardware wallet
-	  type when using this method.</li>
-      </ul>
-
-      <hr />
+    <div class="signer-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      <form class="export-signer-address-form">
-	<p>Choose a BIP32 path.</p>
-<div class="form-row">
+      <form class="export-signer-address-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Export Address" button.</p>
+
+	<div class="form-row">
   <div class="form-group col">
-    <label for="signer-2-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-2-bip32-path" aria-describedby="signer-2-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-2-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-2-bip32-path" aria-describedby="wallet-account-2-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-2">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-2">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-2">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
 
@@ -321,21 +317,27 @@
 	  <i class="fa fa-upload"></i> &nbsp;
 	  Export Address
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
-	<p class="text-danger card-text ledger-warning-http"></p>	
-	<p class="text-danger card-text ledger-warning"></p>
-	<p class="text-warning card-text ledger-tips"></p>		
       </form>
 
       <hr />
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them export their address
+      (using this same application), send it to you, and then enter it
+      below and click the "Add Address" button.</p>
+
+      <p>You do not need to specify the hardware wallet type when using this method.</p>
+
       <form class="enter-signer-address-form" novalidate>
 	<div class="form-group">
 	  <label for="signer-2-address-input">Address</label>
 	  <input type="text" class="form-control form-control-sm signer-address-input" id="signer-2-address-input" aria-describedby="signer-2-address-help" required>
-	  <small id="signer-2-address-help" class="form-text text-muted">Generated by another instance of this application.</small>
+	  <small id="signer-2-address-help" class="form-text text-muted">Previously exported by this application.</small>
 	  <p class="text-danger small"></p>
 	</div>
 	<button type="submit" class="btn btn-primary" disabled>
@@ -360,7 +362,7 @@
 	  <dd class="col-9"><code class="signer-bip32-path"></code></dd>
 	</dl>
 
-	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you need it and the hardware wallet to remove funds from the vault contract.</b></p>
+	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you will need to enter it when attempting to spend funds from this contract.</b></p>
 
       </dl>
 
@@ -376,7 +378,7 @@
 
       <h5 class="card-title">Remote</h5>
 
-      <p class="card-text">This address was entered manually from an address generated by this application on a remote hardware wallet:</p>
+      <p class="card-text">This address was entered manually from an address previously exported by this application:</p>
 
       <div class="text-center">
 	<p class="card-text"><code class="signer-address"></code></p>
@@ -399,38 +401,27 @@
   <h5 class="card-header">Signer 3</h5>
   <div class="card-body">
 
-    <div class="signer-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32 path,
-	  the type of hardware, and
-	  click the "Export Address" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer, have <i>them</i>
-	  export their address (using an instance of this same application on
-	  their computer), send it to you, and then enter it and click the
-	  "Add Address" button. You do not need to specify the hardware wallet
-	  type when using this method.</li>
-      </ul>
-
-      <hr />
+    <div class="signer-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      <form class="export-signer-address-form">
-	<p>Choose a BIP32 path.</p>
-<div class="form-row">
+      <form class="export-signer-address-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Export Address" button.</p>
+
+	<div class="form-row">
   <div class="form-group col">
-    <label for="signer-3-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-3-bip32-path" aria-describedby="signer-3-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-3-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-3-bip32-path" aria-describedby="wallet-account-3-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-3">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-3">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-3">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
 
@@ -438,21 +429,27 @@
 	  <i class="fa fa-upload"></i> &nbsp;
 	  Export Address
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
-	<p class="text-danger card-text ledger-warning-http"></p>	
-	<p class="text-danger card-text ledger-warning"></p>
-	<p class="text-warning card-text ledger-tips"></p>		
       </form>
 
       <hr />
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them export their address
+      (using this same application), send it to you, and then enter it
+      below and click the "Add Address" button.</p>
+
+      <p>You do not need to specify the hardware wallet type when using this method.</p>
+
       <form class="enter-signer-address-form" novalidate>
 	<div class="form-group">
 	  <label for="signer-3-address-input">Address</label>
 	  <input type="text" class="form-control form-control-sm signer-address-input" id="signer-3-address-input" aria-describedby="signer-3-address-help" required>
-	  <small id="signer-3-address-help" class="form-text text-muted">Generated by another instance of this application.</small>
+	  <small id="signer-3-address-help" class="form-text text-muted">Previously exported by this application.</small>
 	  <p class="text-danger small"></p>
 	</div>
 	<button type="submit" class="btn btn-primary" disabled>
@@ -477,7 +474,7 @@
 	  <dd class="col-9"><code class="signer-bip32-path"></code></dd>
 	</dl>
 
-	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you need it and the hardware wallet to remove funds from the vault contract.</b></p>
+	<p class="card-text"><b> Save the BIP32 path used with this hardware wallet, you will need to enter it when attempting to spend funds from this contract.</b></p>
 
       </dl>
 
@@ -493,7 +490,7 @@
 
       <h5 class="card-title">Remote</h5>
 
-      <p class="card-text">This address was entered manually from an address generated by this application on a remote hardware wallet:</p>
+      <p class="card-text">This address was entered manually from an address previously exported by this application:</p>
 
       <div class="text-center">
 	<p class="card-text"><code class="signer-address"></code></p>
@@ -544,6 +541,15 @@
 	<small id="ethereum-account-help" class="form-text text-muted">This account has no rights on the vault, it is only used to pay for gas.</small>
 	<small id="card-text small" class="form-text text-muted" hidden> Node: <code id="ethereum-node"></code></small>
 	<small id="card-text small" class="form-text text-muted" hidden> Network: <code id="ethereum-network"></code></small> 	
+
+	<p><small>Approximate Gas Costs:
+	  <ul>
+	    <li>Contract Creation: 1170000</li>
+	    <li>Deposit ETH: 22512</li>
+	    <li>Withdraw ETH: 95000</li>
+	  </ul>
+	</small></p>
+
       </div>
     </form>
 

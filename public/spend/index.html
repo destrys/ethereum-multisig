@@ -5,8 +5,8 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="description" content="Ethereum Multisig Vault" />
-    <title>Ethereum Multisig Vault</title>
+    <meta name="description" content="Ethereum Multisig" />
+    <title>Ethereum Multisig</title>
 
     <link rel="stylesheet" href="../css/dapp.css" />
 
@@ -25,14 +25,14 @@
       <div class="container">
 	<a class="navbar-brand" href="../index.html" target="_blank">
 	  <img src="../images/logo.png" alt="logo" /> 
-	  Ethereum Multisig Vault <small>v2.0</small>
+	  Ethereum Multisig <small>v2.0</small>
 	</a>
 	<ul class="nav">
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../create/index.html" class="nav-link" target="_blank">Create</a>
+            <a href="../publish/index.html" class="nav-link" target="_blank">Publish New </a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
-            <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
+            <a href="../spend/index.html" class="nav-link" target="_blank">Spend from Existing</a>
 	  </li>
 	  <li class="nav-item d-none d-lg-inline-block">
             <a href="../" class="nav-link" target="_blank">Help</a>
@@ -46,13 +46,13 @@
 	<div id="mainNavContent" class="collapse">
 	  <ul class="navbar-nav">
             <li class="nav-item d-lg-none">
-              <a href="../index.html" class="nav-link" target="_blank">Create</a>
+              <a href="../publish/index.html" class="nav-link" target="_blank">Publish</a>
             </li>
             <li class="nav-item d-lg-none">
               <a href="../spend/index.html" class="nav-link" target="_blank">Spend</a>
             </li>
             <li class="nav-item d-lg-none">
-              <a href="../help/index.html" class="nav-link" target="_blank">Help</a>
+              <a href="../" class="nav-link" target="_blank">Help</a>
             </li>
 	  </ul>
 	</div>
@@ -60,22 +60,51 @@
     </nav>
     <div class="container">
       
-<h1>Spend From Vault</h1>
+<h1>Spend from Existing 2/3-Multisig ETH Smart Contract</h1>
 
-<p class="lead">This page spends from an existing 2/3-multisig smart
-contract using 2 hardware wallets.</p>
+<p class="lead">This page spends from an existing 2/3-multisig
+Ethereum smart contract using 2 hardware wallets.</p>
 
-<p>You and your co-signer will need a total of 2 hardware
-wallets.  Both wallets do not need to be co-located.  Your co-signer
-can use this application on their own computer and send you their
-signature via a (preferably secure) side-channel such as email.</p>
+<h2>Instructions</h2>
+
+<ol>
+  <li><strong>Assemble with your co-signer.</strong>  You will need
+  one co-signer in addition to yourself.  Both of you will need the
+  hardware wallets
+  and <a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki"
+  target="_blank">BIP32 paths</a> you used when you created the
+  address you are now spending from.  You do not all need to be
+  co-located.</li>
+
+  <li><strong>Import the source smart contract by entering its
+  address.</strong> The contract will be checked to make sure it was
+  created by this application and is of a recent-enough version.</li>
+
+  <li><strong>Enter the destination address and amount.</strong> Each
+  signature contains these parameters so changing any one of them will
+  invalidate any signatures you've already collected.</li>
+
+  <li><strong>Collect signatures for both signers.</strong> Both
+  signers will need to sign the transaction from the same hardware
+  wallets and using the same BIP32 paths they used when creating the
+  source address.  A remote signer can independently use this
+  application, <strong>input identical transaction details</strong>,
+  and transmit their signature to a local signer.  (Signature are
+  public data, but signers may still wish to use secure/private
+  channels.)</li>
+
+  <li><strong>Broadcast the doubly-signed transaction to the Ethereum
+  blockchain.</strong> Once both signers' signatures are entered into
+  the form below, use this application to broadcast the transaction to
+  the Ethereum blockchain.</li>
+</ol>
 
 <div class="row">
 
   <div class="col-md-8">
 
     <div id="find-vault" class="card">
-      <h5 class="card-header">Find Vault Contract</h5>
+      <h5 class="card-header">Import Source Contract</h5>
       <form id="find-vault-form">
 	<div class="card-body">
 	  <div class="form-group">
@@ -86,7 +115,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  </div>
    	  <button class="btn btn-primary" type="submit" disabled>
 	    <i class="fa fa-download"></i> &nbsp;
-	    Import
+	    Import this address
 	  </button>
 	  <p class="text-danger card-text vault-address-errors"></p>
 	</div>
@@ -94,15 +123,15 @@ signature via a (preferably secure) side-channel such as email.</p>
     </div>
 
     <div id="author-spend" class="card" hidden>
-      <h5 class="card-header">Author Spend Transaction</h5>
+      <h5 class="card-header">Enter Transaction Details</h5>
       <form id="author-spend-form">
 	<div class="card-body">
 	  <div class="row">
 	    <div class="col-9">
 	      <div class="form-group">
-		<label for="vault-address">Vault Address</label>
+		<label for="vault-address">Source Contract Address</label>
 		<input type="text" class="form-control form-control-sm" id="author-spend-source-address-input" aria-describedby="author-spend-source-address-input-help" required readonly>
-		<small id="author-spend-source-address-input-help" class="form-text text-muted">The source address.</small>
+		<small id="author-spend-source-address-input-help" class="form-text text-muted">The source contract address.</small>
 	      </div>
 	    </div>
 	    <div class="col-3">
@@ -118,14 +147,14 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  <div class="row">
 	    <div class="col-9">
 	      <div class="form-group">
-		<label for="spend-amount">Spend Amount</label>
+		<label for="spend-amount">Amount</label>
 		<div class="input-group">
 		  <input type="text" class="form-control form-control-sm" id="spend-amount-input" aria-describedby="spend-amount-input-help" required>
 		  <div class="input-group-append">
 		    <span class="input-group-text">ETH</span>
 		  </div>
 		</div>
-		<small id="spend-amount-input-help" class="form-text text-muted">Amount to send.</small>
+		<small id="spend-amount-input-help" class="form-text text-muted">Amount to transfer.</small>
 		<p class="text-danger small"></p>
 	      </div>
 	    </div>
@@ -135,7 +164,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 	  </div>
 	  <button class="btn btn-primary" type="submit" disabled>
 	    <i class="fa fa-pencil"></i> &nbsp;
-	    Author
+	    Collect Signatures
 	  </button>
 	  <div class="text-danger card-text" id="author-spend-errors"></div>
 	</div>
@@ -171,16 +200,6 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 </dl>
 
-
-	<p>If signing with a Trezor, it will display
-	the following message for you to sign:</p>
-
-	<pre><code id="spend-message-trezor"></code></pre>
-	
-	<p>If signing with a Ledger, it will display
-	the following message for you to sign:</p>
-
-	<pre><code id="spend-message-ledger"></code></pre>
 
 	<p>Once both signature are obtained, you can broadcast this
 	  spend.</p>
@@ -358,50 +377,52 @@ signature via a (preferably secure) side-channel such as email.</p>
   <h5 class="card-header">Signature 1</h5>
   <div class="card-body">
 
-    <div class="signature-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32
-	  path and click the "Sign" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer,
-	  have <i>them</i> sign (using an instance of this same
-	  application on their computer with the same spend
-	  parameters), send it to you, and then enter it and click the
-	  "Add Signature" button.</li>
-      </ul>
-
-      <p class="small">In either case, ensure that the hardware wallet &amp;
-      BIP32 path you are signing with match those used when creating
-      this vault.</p>
-
-      <hr />
-
+    <div class="signature-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      
-      <form class="extract-signer-signature-form">
-	<p>Choose a BIP32 path.</p>
-<div class="form-row">
+      <form class="extract-signer-signature-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Sign" button.</p>
+
+	<div class="form-row">
   <div class="form-group col">
-    <label for="signer-1-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-1-bip32-path" aria-describedby="signer-1-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-1-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-1-bip32-path" aria-describedby="wallet-account-1-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-1">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-1">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-1">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
+
+
+	<div class="spend-message-trezor-wrapper">
+	  <p>Your Trezor will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-trezor"></code></p>
+	</div>
+
+	<div class="spend-message-ledger-wrapper" hidden>
+	  <p>Your Ledger will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-ledger"></code></p>
+	</div>
 
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-thumbs-up"></i> &nbsp;
 	  Sign
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
       </form>
 
@@ -409,16 +430,26 @@ signature via a (preferably secure) side-channel such as email.</p>
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them use this application to
+      enter the same transaction details above, sign with their own
+      hardware wallet, and send their signature to you.  Enter it
+      below and click the "Add Signature" button.</p>
+
       <form class="enter-signer-signature-form" novalidate>
 	<div class="form-group">
 	  <label for="signature-1-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-1-signature-input" aria-describedby="signer-1-signature-help" required>
-	  <small id="signer-1-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <small id="signer-1-signature-help" class="form-text text-muted">Previously created by this application.</small>
+	</div>
+
+	<div class="form-group">
+	  <label for="select-hardware-wallet-1">Select Hardware Wallet:</label>
 	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-1">
-	    <option>Trezor</option>
-	    <option>Ledger</option>
+	    <option value="Trezor">Trezor One</option>
+	    <option value="Ledger">Ledger Nano S</option>
 	  </select>	  
 	</div>
+
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
 	  Add Signature
@@ -436,7 +467,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 
   <dt class="col-2">Wallet Type</dt>
-  <dd class="col-10"><code class="wallet_type"></code></dd>
+  <dd class="col-10"><code class="wallet-type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -451,6 +482,8 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dd class="col-10"><code class="signature-v"></code></dd>
   
 </dl>
+
+<p class="card-text text-danger signature-errors"></p>
 
       <p class="card-text">If you are sending this signature to another signer to
 	be entered manually, copy the 'Signature' field (the long one).</p>
@@ -467,7 +500,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 
   <dt class="col-2">Wallet Type</dt>
-  <dd class="col-10"><code class="wallet_type"></code></dd>
+  <dd class="col-10"><code class="wallet-type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -482,6 +515,8 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dd class="col-10"><code class="signature-v"></code></dd>
   
 </dl>
+
+<p class="card-text text-danger signature-errors"></p>
 
       <form class="signature-remove-form">
 	<button type="submit" class="btn btn-danger">Remove</button>
@@ -496,50 +531,52 @@ signature via a (preferably secure) side-channel such as email.</p>
   <h5 class="card-header">Signature 2</h5>
   <div class="card-body">
 
-    <div class="signature-new">
-
-      <ul class="small">
-	<li>If the hardware wallet is local to this computer, choose a BIP32
-	  path and click the "Sign" button.</li>
-
-	<li>If the hardware wallet is held by a remote co-signer,
-	  have <i>them</i> sign (using an instance of this same
-	  application on their computer with the same spend
-	  parameters), send it to you, and then enter it and click the
-	  "Add Signature" button.</li>
-      </ul>
-
-      <p class="small">In either case, ensure that the hardware wallet &amp;
-      BIP32 path you are signing with match those used when creating
-      this vault.</p>
-
-      <hr />
-
+    <div class="signature-new wallet-account">
 
       <h5 class="card-title">Local</h5>
 
-      
-      <form class="extract-signer-signature-form">
-	<p>Choose a BIP32 path.</p>
-<div class="form-row">
+      <form class="extract-signer-signature-form wallet-account-form">
+
+	<p>If the signer is local, choose a BIP32 path, the type of
+	hardware wallet, and click the "Sign" button.</p>
+
+	<div class="form-row">
   <div class="form-group col">
-    <label for="signer-2-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-2-bip32-path" aria-describedby="signer-2-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-2-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-2-bip32-path" aria-describedby="wallet-account-2-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-2">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-2">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-2">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
+
+
+	<div class="spend-message-trezor-wrapper">
+	  <p>Your Trezor will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-trezor"></code></p>
+	</div>
+
+	<div class="spend-message-ledger-wrapper" hidden>
+	  <p>Your Ledger will will display the following message for you
+	    to sign:</p>
+
+	  <p class="text-center"><code class="spend-message-ledger"></code></p>
+	</div>
 
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-thumbs-up"></i> &nbsp;
 	  Sign
 	</button>
+	<p class="text-info card-text trezor-info">Ensure your Trezor is plugged in.</p>
+	<p class="text-info card-text ledger-info" hidden>Ensure your Ledger is plugged in and the Ethereum app is open.</p>
+	<p class="text-danger card-text ledger-warning-http" hidden>Ledger requires an HTTPS connection.</p>
 	<p class="text-danger card-text trezor-errors"></p>
       </form>
 
@@ -547,16 +584,26 @@ signature via a (preferably secure) side-channel such as email.</p>
 
       <h5 class="card-title">Remote</h5>
 
+      <p>If the signer is remote, have them use this application to
+      enter the same transaction details above, sign with their own
+      hardware wallet, and send their signature to you.  Enter it
+      below and click the "Add Signature" button.</p>
+
       <form class="enter-signer-signature-form" novalidate>
 	<div class="form-group">
 	  <label for="signature-2-signature-input">Signature</label>
 	  <input type="text" class="form-control form-control-sm signature-input" id="signer-2-signature-input" aria-describedby="signer-2-signature-help" required>
-	  <small id="signer-2-signature-help" class="form-text text-muted">Genearted by another instance of this application.</small>
+	  <small id="signer-2-signature-help" class="form-text text-muted">Previously created by this application.</small>
+	</div>
+
+	<div class="form-group">
+	  <label for="select-hardware-wallet-2">Select Hardware Wallet:</label>
 	  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-2">
-	    <option>Trezor</option>
-	    <option>Ledger</option>
+	    <option value="Trezor">Trezor One</option>
+	    <option value="Ledger">Ledger Nano S</option>
 	  </select>	  
 	</div>
+
 	<button type="submit" class="btn btn-primary">
 	  <i class="fa fa-plus"></i> &nbsp;
 	  Add Signature
@@ -574,7 +621,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 
   <dt class="col-2">Wallet Type</dt>
-  <dd class="col-10"><code class="wallet_type"></code></dd>
+  <dd class="col-10"><code class="wallet-type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -589,6 +636,8 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dd class="col-10"><code class="signature-v"></code></dd>
   
 </dl>
+
+<p class="card-text text-danger signature-errors"></p>
 
       <p class="card-text">If you are sending this signature to another signer to
 	be entered manually, copy the 'Signature' field (the long one).</p>
@@ -605,7 +654,7 @@ signature via a (preferably secure) side-channel such as email.</p>
 
 
   <dt class="col-2">Wallet Type</dt>
-  <dd class="col-10"><code class="wallet_type"></code></dd>
+  <dd class="col-10"><code class="wallet-type"></code></dd>
 
   <dt class="col-2">Signature</dt>
   <dd class="col-10"><code class="signature-full"></code></dd>
@@ -620,6 +669,8 @@ signature via a (preferably secure) side-channel such as email.</p>
   <dd class="col-10"><code class="signature-v"></code></dd>
   
 </dl>
+
+<p class="card-text text-danger signature-errors"></p>
 
       <form class="signature-remove-form">
 	<button type="submit" class="btn btn-danger">Remove</button>
@@ -660,6 +711,15 @@ signature via a (preferably secure) side-channel such as email.</p>
 	<small id="ethereum-account-help" class="form-text text-muted">This account has no rights on the vault, it is only used to pay for gas.</small>
 	<small id="card-text small" class="form-text text-muted" hidden> Node: <code id="ethereum-node"></code></small>
 	<small id="card-text small" class="form-text text-muted" hidden> Network: <code id="ethereum-network"></code></small> 	
+
+	<p><small>Approximate Gas Costs:
+	  <ul>
+	    <li>Contract Creation: 1170000</li>
+	    <li>Deposit ETH: 22512</li>
+	    <li>Withdraw ETH: 95000</li>
+	  </ul>
+	</small></p>
+
       </div>
     </form>
 

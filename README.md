@@ -144,6 +144,7 @@ need:
 You may also have to install some system dependencies:
 
 * OS X -- run `brew install libusb leveldb`
+* Ubuntu/Debian -- run `apt install python3-dev libusb-dev`
 
 To install all development dependencies, open a shell in this
 repository's directory and run:

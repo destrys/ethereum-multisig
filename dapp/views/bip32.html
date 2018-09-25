@@ -1,15 +1,14 @@
-<p>Choose a BIP32 path.</p>
 <div class="form-row">
   <div class="form-group col">
-    <label for="signer-<%= number %>-bip32-path">BIP32 Path</label>
-    <input type="text" class="form-control form-control-sm signer-bip32-path" id="signer-<%= number %>-bip32-path" aria-describedby="signer-<%= number %>-bip32-help" value="m/45'/60'/0'/0/0" required>
+    <label for="wallet-account-<%= number %>-bip32-path">BIP32 Path</label>
+    <input type="text" class="form-control form-control-sm wallet-account-bip32-path" id="wallet-account-<%= number %>-bip32-path" aria-describedby="wallet-account-<%= number %>-bip32-help" value="m/45'/60'/0'/0/0" required>
     <p class="text-danger small"></p>
   </div>
 </div>
 <div class="form-group">
   <label for="select-hardware-wallet-<%= number %>">Select Hardware Wallet:</label>
-  <select class="form-control bootstrap-select signer-hardware-wallet" id="select-hardware-wallet-<%= number %>">
-    <option>Trezor</option>
-    <option>Ledger</option>
+  <select class="form-control bootstrap-select wallet-account-hardware-wallet" id="select-hardware-wallet-<%= number %>">
+    <option value="Trezor">Trezor One</option>
+    <option value="Ledger">Ledger Nano S</option>
   </select>
 </div>
