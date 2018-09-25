@@ -1,7 +1,7 @@
 Ethereum Multisig
 =================
 
-<img src="https://github.com/unchained-capitl/ethereum-multisig/raw/master/audit/HoshoSecured_Emblem_Red.png" width="150px">
+<img src="https://raw.githubusercontent.com/unchained-capital/ethereum-multisig/master/audit/HoshoSecured_Emblem_Red.png" width="150px">
 
 This repository implements an Ethereum smart contract
 (`Multisig2of3`) which requires signed messages from 2/3 members
